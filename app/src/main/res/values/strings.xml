@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Mosaic</string>
+    <string name="empty"></string>
+    <string name="pick_a_number">Pick A Number</string>
+    <string name="add">Add</string>
+    <string name="title_activity_contacts_screen">Contacts</string>
+    <string name="title_activity_mosaics_list_screen">Mosaics</string>
+    <string name="title_activity_contact_detail_screen">Ashley</string>
+    <string name="create_a_mosaic_or_pick_from_the_mosaics_created">Create a Mosaic or Pick from the Mosaics created!</string>
+    <string name="holdMosaictoDeleteLabel">Hold the Mosaic you wish to delete!</string>
+</resources>
