@@ -108,16 +108,16 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
         if (mosaics.get(position).getImagePath().isImageFromGoogleDrive()) {
             Picasso.with(mContext)
                     .load(new File(mosaics.get(position).getImagePath().getStringUri()))
-                    .placeholder(R.drawable.progress_animation)
-                    .error(R.drawable.img_placeholder)
+                    //.placeholder(R.drawable.progress_animation)
+                    .error(android.R.drawable.ic_menu_report_image)
                     .into(viewHolder.img);
 
         } else {
 
             Picasso.with(mContext)
                     .load(new File(mosaics.get(position).getImagePath().getPath()))
-                    .placeholder(R.drawable.progress_animation)
-                    .error(R.drawable.img_placeholder)
+                    //.placeholder(R.drawable.progress_animation)
+                    .error(android.R.drawable.ic_menu_report_image)
                     .into(viewHolder.img);
         }
 
