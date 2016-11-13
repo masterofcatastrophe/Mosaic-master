@@ -7,9 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,6 +96,7 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
             viewHolder = new ViewHolder();
             viewHolder.img = (ImageView) convertView.findViewById(R.id.mosaic_list_row_img);
             viewHolder.txt = (TextView) convertView.findViewById(R.id.mosaic_list_row_txt);
+            viewHolder.pb = (ProgressBar) convertView.findViewById(R.id.mosaic_list_row_pb);
             /**
              * At very first time when the List View row Item control's
              * instance is created it will be store in the convertView as a
@@ -107,8 +113,24 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
         }
 
         viewHolder.txt.setText(mosaics.get(position).getName());
-        viewHolder.img.setImageDrawable(ImageManager.getDrawable(mContext, mosaics.get(position).getImagePath()));
 
+        if (mosaics.get(position).getImagePath().isImageFromGoogleDrive()) {
+            Picasso.with(mContext)
+                    .load(new File(mosaics.get(position).getImagePath().getStringUri()))
+                    //.placeholder(R.drawable.progress_animation)
+                    .error(R.drawable.img_placeholder)
+                    .into(viewHolder.img);
+
+        } else {
+
+            Picasso.with(mContext)
+                    .load(new File(mosaics.get(position).getImagePath().getPath()))
+                    //.placeholder(R.drawable.progress_animation)
+                    .error(R.drawable.img_placeholder)
+                    .into(viewHolder.img);
+        }
+
+        viewHolder.pb.setVisibility(View.GONE);
         return convertView;
     }
 
@@ -137,6 +159,7 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
     public class ViewHolder {
         public ImageView img;
         public TextView txt;
+        public ProgressBar pb;
 
     }
 }

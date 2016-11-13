@@ -24,11 +24,17 @@
                 android:layout_height="120dp"
                 android:layout_marginRight="16dp">
 
-                <ImageView
-                    android:id="@+id/mosaic_list_row_img"
-                    android:scaleType="centerCrop"
+                <ProgressBar
+                    android:id="@+id/mosaic_list_row_pb"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/mosaic_list_row_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
 
             </FrameLayout>
 
