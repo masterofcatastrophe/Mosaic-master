@@ -5,6 +5,6 @@ package codesages.mosaic.helpers;
  */
 
 public class Keys {
-    public static String INTENT_EXTRA_CONTACT_SCREEN_INDEX = "contactScreenIndex";
+    public static String INTENT_EXTRA_SELECTED_MOSAIC_INDEX = "selectedMosaicIndex";
 
 }

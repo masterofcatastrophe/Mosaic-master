@@ -145,6 +145,7 @@ public class ContactPickActivity extends AppCompatActivity {
 
     }*/
 
+    // not used
     private ArrayList<Card> initCard(ArrayList<Contact> contacts) {
 
         //Init an array of Cards
@@ -197,6 +198,7 @@ public class ContactPickActivity extends AppCompatActivity {
         return cards;
     }
 
+    //not used
     private void updateAdapter(ArrayList<Card> cards) {
         if (cards != null) {
             mCardArrayAdapter.addAll(cards);

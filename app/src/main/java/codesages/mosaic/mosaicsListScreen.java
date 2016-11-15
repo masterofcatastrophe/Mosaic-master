@@ -6,38 +6,28 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import codesages.mosaic.helpers.CacheManager;
-import codesages.mosaic.helpers.Contact;
 import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
-import codesages.mosaic.lists.ContactAdapter;
 import codesages.mosaic.lists.MosaicAdapter;
 import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
-import it.gmariotti.cardslib.library.internal.base.BaseCard;
 import it.gmariotti.cardslib.library.recyclerview.internal.CardArrayRecyclerViewAdapter;
-import it.gmariotti.cardslib.library.recyclerview.view.CardRecyclerView;
 
 public class mosaicsListScreen extends AppCompatActivity {
 
@@ -95,11 +85,18 @@ public class mosaicsListScreen extends AppCompatActivity {
                                     View view, int position, long id) {
                 Log.d(TAG, "onClick: " + position);
                 Intent intent = new Intent(getApplicationContext(), contactsScreen.class);
-                intent.putExtra(Keys.INTENT_EXTRA_CONTACT_SCREEN_INDEX, position);
+                intent.putExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, position);
                 startActivity(intent);
             }
         });
-
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String mname = ((TextView) view.findViewById(R.id.mosaic_list_row_txt)).getText().toString();
+                Toast.makeText(mosaicsListScreen.this, "LongClick " + mname, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 /*    private void setList() {
         ArrayList<Card> cards = new ArrayList<Card>();
@@ -234,7 +231,7 @@ public class mosaicsListScreen extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d(TAG, "onClick: " + position);
                     Intent intent = new Intent(getApplicationContext(), contactsScreen.class);
-                    intent.putExtra(Keys.INTENT_EXTRA_CONTACT_SCREEN_INDEX, position);
+                    intent.putExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, position);
                     startActivity(intent);
                 }
             });

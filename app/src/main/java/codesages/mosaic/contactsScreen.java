@@ -8,13 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
+import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
+import codesages.mosaic.helpers.Mosaic;
 
 public class contactsScreen extends AppCompatActivity {
     static String TAG = "ConatctScreen";
+    Mosaic mosaic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +27,10 @@ public class contactsScreen extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        int index = getIntent().getIntExtra(Keys.INTENT_EXTRA_CONTACT_SCREEN_INDEX, 0);
-        Log.d(TAG, "onCreate: " + index);
-
+        getMosaic();
+        if (mosaic != null) {
+            setViews();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addContactsID);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +72,17 @@ public class contactsScreen extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void setViews() {
+        TextView mosaicNameTv = (TextView) findViewById(R.id.contact_screen_mosaic_name_tv);
+        mosaicNameTv.setText(mosaic.getName());
+    }
+
+    private void getMosaic() {
+        int index = getIntent().getIntExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, 0);
+        Log.d(TAG, "getMosaic: " + index);
+        mosaic = CacheManager.getMosaicByPosition(this, index);
     }
 
 }

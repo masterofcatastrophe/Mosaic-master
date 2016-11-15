@@ -32,6 +32,7 @@ public class MosaicCreationScreen extends AppCompatActivity {
     Drawable drawable;
     AddMosaic addTask;
     ImagePath imagePath;
+    boolean isImageSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +54,13 @@ public class MosaicCreationScreen extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 */
-                if (!mosaicNameEt.getText().toString().isEmpty()) {
+                if (!mosaicNameEt.getText().toString().isEmpty() && isImageSet) {
                     Mosaic mosaic = new Mosaic(mosaicNameEt.getText().toString(), new Date(), imagePath);
                     addTask = new AddMosaic();
                     addTask.execute(mosaic);
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Enter a Name First!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Enter a Name First and Select a Photo", Toast.LENGTH_SHORT).show();
                     mosaicNameEt.requestFocus();
                 }
             }
@@ -113,6 +114,7 @@ public class MosaicCreationScreen extends AppCompatActivity {
         if (imagePath.isSuccess()) {
             drawable = ImageManager.getDrawable(this, imagePath);
             img.setImageDrawable(drawable);
+            isImageSet = true;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -2,6 +2,8 @@ package codesages.mosaic.lists;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,8 +108,9 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
         viewHolder.txt.setText(mosaics.get(position).getName());
 
         if (mosaics.get(position).getImagePath().isImageFromGoogleDrive()) {
+            Log.d(TAG, "getView: get Image from Google with " + mosaics.get(position).getImagePath().getStringUri());
             Picasso.with(mContext)
-                    .load(new File(mosaics.get(position).getImagePath().getStringUri()))
+                    .load(Uri.parse(mosaics.get(position).getImagePath().getStringUri()))
                     //.placeholder(R.drawable.progress_animation)
                     .error(android.R.drawable.ic_menu_report_image)
                     .into(viewHolder.img);

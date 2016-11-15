@@ -12,29 +12,26 @@ import java.util.ArrayList;
 /**
  * Created by DELL on 12/11/2016.
  * <p>
-  __  .___________.    _______.
- |  | |           |   /       |
- |  | `---|  |----`  |   (----`
- |  |     |  |        \   \
- |  |     |  |    .----)   |
- |__|     |__|    |_______/
-
-  _______  __    __    ______  __  ___  __  .__   __.   _______
- |   ____||  |  |  |  /      ||  |/  / |  | |  \ |  |  /  _____|
- |  |__   |  |  |  | |  ,----'|  '  /  |  | |   \|  | |  |  __
- |   __|  |  |  |  | |  |     |    <   |  | |  . `  | |  | |_ |
- |  |     |  `--'  | |  `----.|  .  \  |  | |  |\   | |  |__| |
- |__|      \______/   \______||__|\__\ |__| |__| \__|  \______|
-
-   ______     ___       ______  __    __   _______
-  /      |   /   \     /      ||  |  |  | |   ____|
- |  ,----'  /  ^  \   |  ,----'|  |__|  | |  |__
- |  |      /  /_\  \  |  |     |   __   | |   __|
- |  `----./  _____  \ |  `----.|  |  |  | |  |____
-  \______/__/     \__\ \______||__|  |__| |_______|
- *
- *
- *
+ * __  .___________.    _______.
+ * |  | |           |   /       |
+ * |  | `---|  |----`  |   (----`
+ * |  |     |  |        \   \
+ * |  |     |  |    .----)   |
+ * |__|     |__|    |_______/
+ * <p>
+ * _______  __    __    ______  __  ___  __  .__   __.   _______
+ * |   ____||  |  |  |  /      ||  |/  / |  | |  \ |  |  /  _____|
+ * |  |__   |  |  |  | |  ,----'|  '  /  |  | |   \|  | |  |  __
+ * |   __|  |  |  |  | |  |     |    <   |  | |  . `  | |  | |_ |
+ * |  |     |  `--'  | |  `----.|  .  \  |  | |  |\   | |  |__| |
+ * |__|      \______/   \______||__|\__\ |__| |__| \__|  \______|
+ * <p>
+ * ______     ___       ______  __    __   _______
+ * /      |   /   \     /      ||  |  |  | |   ____|
+ * |  ,----'  /  ^  \   |  ,----'|  |__|  | |  |__
+ * |  |      /  /_\  \  |  |     |   __   | |   __|
+ * |  `----./  _____  \ |  `----.|  |  |  | |  |____
+ * \______/__/     \__\ \______||__|  |__| |_______|
  */
 
 public class CacheManager {
@@ -50,10 +47,29 @@ public class CacheManager {
             Gson gson = new Gson();
             ArrayList<Mosaic> mos = gson.fromJson(json, new TypeToken<ArrayList<Mosaic>>() {
             }.getType());
-            Log.d(TAG, "getMosaicFromCache: Size" + mos.size());
+            Log.d(TAG, "Size" + mos.size());
             return mos;
         }
         return new ArrayList<Mosaic>();
+    }
+
+    public static Mosaic getMosaicByPosition(Context ctx, int index) {
+        Log.d(TAG, "getMosaicByPosition: " + index);
+        ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);
+
+        return mosaics.size() > index ? mosaics.get(index) : null;
+    }
+
+    public static boolean updateMosaicByPosition(Context ctx, Mosaic mosiac, int position) {
+        Log.d(TAG, "updateMosaicByPosition: " + position);
+        ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);
+        if (mosaics.size() > position) {
+            mosaics.set(position, mosiac);
+            setMosaicFromCache(ctx, mosaics);
+            return true;
+        }
+        return false;
+
     }
 
     public static void setMosaicFromCache(Context ctx, ArrayList<Mosaic> list) {
