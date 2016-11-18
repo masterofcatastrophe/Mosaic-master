@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Html;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,6 +103,7 @@ public class ContactPickActivity extends AppCompatActivity {
             @Override
             public void onItemClick(android.widget.AdapterView<?> parent,
                                     View view, int position, long id) {
+                Log.d(TAG, "onItemClick: ");
                 showRadioButtonDialog(contacts.get(position));
             }
         });
@@ -109,47 +111,62 @@ public class ContactPickActivity extends AppCompatActivity {
 
     private void showRadioButtonDialog(final Contact contact) {
         // custom dialog
+        Log.d(TAG, "showRadioButtonDialog: ");
         final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //builder.setView(R.layout.contact_dialog);
         builder.setTitle("Pick a Number");
-        builder.setSingleChoiceItems(contact.getNumbers().getNumbersEmail().toArray(new CharSequence[contact.getNumbers().getNumbersEmail().size()]), -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedIndex = which;
-            }
-        });
+        builder.setMultiChoiceItems(
+                contact.getNumbers().getNumbersEmail().toArray(new CharSequence[contact.getNumbers().getNumbersEmail().size()]),
+                new boolean[contact.getNumbers().getNumbersEmail().size()],
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        selectedIndex = which;
+                    }
+                });
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                MosaicContact mContact = null;
-                if (contact.getNumbers().getNumbersEmail().get(selectedIndex).contains("Email:")) {
-                    String email = contact.getNumbers().getNumbersEmail().get(selectedIndex);
-                    String emailTrimmed = email.substring(email.indexOf("Email: ") + 7);
-
-                    mContact = new MosaicContact(contact.getName(),
-                            emailTrimmed,
-                            "",
-                            true, "");
-                } else {
-                    mContact = new MosaicContact(contact.getName(),
-                            "",
-                            contact.getNumbers().getNumbersEmail().get(selectedIndex),
-                            false, "");
-                }
-                boolean added = CacheManager.addMosaicContact(ctx, mosaicIndex, mContact);
+                ListView lw = ((AlertDialog) dialog).getListView();
+                SparseBooleanArray checkedItem = lw.getCheckedItemPositions();
+                boolean added = AddContactToMosaic(checkedItem, contact);
                 if (added) {
-                    Toast.makeText(ctx, " Added: " + contact.getNumbers().getNumbersEmail().get(selectedIndex), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ctx,
+                            " Added: " + contact.getNumbers().getNumbersEmail().get(selectedIndex), Toast.LENGTH_SHORT).show();
                     finish();
                 } else
-                    Toast.makeText(ctx, "Could not add the selected Contact ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ctx,
+                            "Could not add the selected Contact ", Toast.LENGTH_SHORT).show();
 
             }
         });
         builder.create().show();
 
 
+    }
+
+    private boolean AddContactToMosaic(SparseBooleanArray checkedItem, Contact contact) {
+
+        ArrayList<String> emails = new ArrayList<String>();
+        ArrayList<String> phonenums = new ArrayList<String>();
+
+        for (int i = 0; i < contact.getNumbers().getNumbersEmail().size(); i++) {
+            if (checkedItem.get(i)) {
+                if (contact.getNumbers().getNumbersEmail().get(i).contains("Email:")) {
+                    String email = contact.getNumbers().getNumbersEmail().get(i);
+                    String emailTrimmed = email.substring(email.indexOf("Email: ") + 7);
+                    emails.add(emailTrimmed);
+
+                } else {
+                    phonenums.add(contact.getNumbers().getNumbersEmail().get(i));
+                }
+            }
+        }
+
+        MosaicContact mContact = new MosaicContact(contact.getName(), new ContactNumbers(phonenums, emails));
+        return CacheManager.addMosaicContact(ctx, mosaicIndex, mContact);
     }
 
     /*private void setList() {

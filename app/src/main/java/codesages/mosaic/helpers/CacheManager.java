@@ -100,11 +100,60 @@ public class CacheManager {
         else
             contacts = new ArrayList<>();
 
-        contacts.add(mosaicContact);
+        //contacts.add(mosaicContact);
 
-        mosaic.setContacts(contacts);
+        mosaic.setContacts(mergeWithCached(contacts, mosaicContact));
         updateMosaicByPosition(ctx, mosaic, mosaicIndex);
         return true;
+
+    }
+
+    public static ArrayList<MosaicContact> mergeWithCached(ArrayList<MosaicContact> contacts, MosaicContact mosaicContact) {
+        MosaicContact cachedMosaicContact = null;
+        boolean nameFound = false;
+        for (int i = 0; i < contacts.size(); i++) {
+            if (contacts.get(i).getName().equals(mosaicContact.getName())) {
+                nameFound = true;
+                Log.d(TAG, "mergeWithCached: " + contacts.get(i).getName() + "==" + mosaicContact.getName());
+                cachedMosaicContact = contacts.get(i);
+
+                for (int k = 0; k < mosaicContact.getContactNumbers().getNumbers().size(); k++) {
+                    boolean innerFound = false;
+                    String neW = mosaicContact.getContactNumbers().getNumbers().get(k);
+                    for (int j = 0; j < cachedMosaicContact.getContactNumbers().getNumbers().size(); j++) {
+                        String cached = mosaicContact.getContactNumbers().getNumbers().get(j);
+                        if (neW.equals(cached)) {
+                            innerFound = true;
+                            //break;
+                        }
+                    }
+                    if (!innerFound) {
+                        contacts.get(i).getContactNumbers().getNumbers().add(neW);
+
+                    }
+                }
+                for (int k = 0; k < mosaicContact.getContactNumbers().getEmails().size(); k++) {
+                    boolean innerFound = false;
+                    String neW = mosaicContact.getContactNumbers().getEmails().get(k);
+                    for (int j = 0; j < cachedMosaicContact.getContactNumbers().getEmails().size(); j++) {
+                        String cached = mosaicContact.getContactNumbers().getEmails().get(j);
+                        if (neW.equals(cached)) {
+                            innerFound = true;
+                            break;
+                        }
+                    }
+                    if (!innerFound) {
+                        contacts.get(i).getContactNumbers().getEmails().add(neW);
+
+                    }
+                }
+            }
+        }
+        if (!nameFound) {
+            Log.d(TAG, "mergeWithCached: Name not found");
+            contacts.add(mosaicContact);
+        }
+        return contacts;
 
     }
 }

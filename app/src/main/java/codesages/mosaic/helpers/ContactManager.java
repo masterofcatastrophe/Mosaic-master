@@ -45,7 +45,6 @@ public class ContactManager {
                             new String[]{id},
                             null);
 
-                    ContactNumbers numbers = new ContactNumbers();
                     ArrayList<String> numbersArray = new ArrayList<>();
                     ArrayList<String> emailsArray = new ArrayList<>();
 
@@ -72,9 +71,7 @@ public class ContactManager {
                     emailCur.close();
 
                     if (numbersArray.size() > 0) {
-                        numbers.setNumbers(numbersArray);
-                        numbers.setEmails(emailsArray);
-                        contact.setNumbers(numbers);
+                        contact.setNumbers(new ContactNumbers(numbersArray, emailsArray));
                         contactsList.add(contact);
                     }
 

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import codesages.mosaic.R;
 import codesages.mosaic.helpers.Contact;
+import codesages.mosaic.helpers.ContactNumbers;
 import codesages.mosaic.helpers.MosaicContact;
 
 /**
@@ -117,19 +118,21 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
         }
 
         viewHolder.name.setText(conatcts.get(position).getName());
-        if (conatcts.get(position).isEmail()) {
-            viewHolder.contact.setText(conatcts.get(position).getEmail());
-        } else {
-            viewHolder.contact.setText(conatcts.get(position).getNumber());
+        String strContact = "";
+        ContactNumbers contactNumbers = conatcts.get(position).getContactNumbers();
+        for (int i = 0; i < contactNumbers.getNumbersEmail().size(); i++) {
+            strContact += contactNumbers.getNumbersEmail().get(i)+", ";
         }
+        viewHolder.contact.setText(strContact);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM yyyy hh:mm");
         if (conatcts.get(position).getLastCall() == null) {
             //to convert Date to String, use format method of SimpleDateFormat class.
             String strDate = dateFormat.format(new Date());
-            viewHolder.period.setText("Last Contacted on: " + strDate);
+            viewHolder.period.setText(String.format("Last Contacted on: %s", strDate));
         } else {
             String strDate = dateFormat.format(conatcts.get(position).getLastCall());
-            viewHolder.period.setText("Last Contacted on: " + strDate);
+            viewHolder.period.setText(String.format("Last Contacted on: %s", strDate));
         }
         String[] initials = conatcts.get(position).getName().split(" ");
         String init = "M";

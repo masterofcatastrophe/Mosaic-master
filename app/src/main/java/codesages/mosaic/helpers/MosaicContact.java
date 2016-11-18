@@ -9,17 +9,12 @@ import java.util.Date;
 public class MosaicContact {
     String Name;
     Date LastCall;
-    String Email;
-    String Number;
-    String Period;
-    boolean isEmail;
+    String Frequency;
+    ContactNumbers contactNumbers;
 
-    public MosaicContact(String name, String email, String number, boolean isEmail, String period) {
+    public MosaicContact(String name, ContactNumbers contactnumbers) {
         Name = name;
-        Email = email;
-        Number = number;
-        this.isEmail = isEmail;
-        Period = period;
+        contactNumbers = contactnumbers;
     }
 
     public String getName() {
@@ -38,27 +33,19 @@ public class MosaicContact {
         LastCall = lastCall;
     }
 
-    public String getEmail() {
-        return Email;
+    public String getFrequency() {
+        return Frequency;
     }
 
-    public void setEmail(String email) {
-        Email = email;
+    public void setFrequency(String frequency) {
+        Frequency = frequency;
     }
 
-    public String getNumber() {
-        return Number;
+    public ContactNumbers getContactNumbers() {
+        return contactNumbers;
     }
 
-    public void setNumber(String number) {
-        Number = number;
-    }
-
-    public boolean isEmail() {
-        return isEmail;
-    }
-
-    public void setEmail(boolean email) {
-        isEmail = email;
+    public void setContactNumbers(ContactNumbers contactNumbers) {
+        this.contactNumbers = contactNumbers;
     }
 }

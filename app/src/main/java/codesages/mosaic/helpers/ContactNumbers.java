@@ -11,6 +11,10 @@ public class ContactNumbers {
     ArrayList<String> numbers = new ArrayList<>();
     ArrayList<String> Emails = new ArrayList<>();
 
+    public ContactNumbers(ArrayList<String> numbers, ArrayList<String> emails) {
+        this.numbers = numbers;
+        Emails = emails;
+    }
 
     public ArrayList<String> getNumbers() {
         return numbers;
