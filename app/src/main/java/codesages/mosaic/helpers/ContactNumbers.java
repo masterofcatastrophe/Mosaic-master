@@ -7,11 +7,10 @@ import java.util.ArrayList;
  */
 
 public class ContactNumbers {
-    String Phone = "";
-    String Work = "";
-    String Email = "";
-    String Home = "";
+
     ArrayList<String> numbers = new ArrayList<>();
+    ArrayList<String> Emails = new ArrayList<>();
+
 
     public ArrayList<String> getNumbers() {
         return numbers;
@@ -21,35 +20,22 @@ public class ContactNumbers {
         this.numbers = numbers;
     }
 
-    public String getHome() {
-        return Home;
+    public ArrayList<String> getEmails() {
+        return Emails;
     }
 
-    public void setHome(String home) {
-        Home = home;
+    public void setEmails(ArrayList<String> emails) {
+        Emails = emails;
     }
 
-    public String getPhone() {
-        return Phone;
-    }
+    public ArrayList<String> getNumbersEmail() {
 
-    public void setPhone(String phone) {
-        Phone = phone;
-    }
+        ArrayList<String> list = new ArrayList<>(this.getNumbers());
+        for (int i = 0; i < this.Emails.size(); i++) {
+            list.add("Email: " + this.Emails.get(i));
+        }
 
-    public String getWork() {
-        return Work;
-    }
 
-    public void setWork(String work) {
-        Work = work;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        Email = email;
+        return list;
     }
 }

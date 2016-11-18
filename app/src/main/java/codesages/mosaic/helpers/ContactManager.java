@@ -31,53 +31,53 @@ public class ContactManager {
                 Log.d("ContactManager", "ContactName: " + contactName + " Id: " + id);
                 if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     //the below cursor will give you details for multiple contacts
-                    Cursor pCursor = cntx.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                    Cursor pCursor = cntx.getContentResolver().query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    // continue till this cursor reaches to all phone numbers which are associated with a contact in the contact list
+                            new String[]{id},
+                            null);
+
+                    Cursor emailCur = cntx.getContentResolver().query(
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                            new String[]{id},
+                            null);
+
                     ContactNumbers numbers = new ContactNumbers();
                     ArrayList<String> numbersArray = new ArrayList<>();
-                    while (pCursor.moveToNext()) {
-                        int phoneType = pCursor.getInt(pCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                        //String isStarred 		= pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.STARRED));
-                        String phoneNo = pCursor.getString(pCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        //you will get all phone numbers according to it's type as below switch case.
-                        //Logs.e will print the phone number along with the name in DDMS. you can use these details where ever you want.
-                        switch (phoneType) {
-                            case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                                Log.e(contactName + ": TYPE_MOBILE", " " + phoneNo);
-                                numbers.setPhone(phoneNo);
-                                numbersArray.add(phoneNo);
-                                break;
-                            case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-                                Log.e(contactName + ": TYPE_HOME", " " + phoneNo);
-                                numbers.setHome(phoneNo);
-                                numbersArray.add(phoneNo);
-                                break;
-                            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-                                Log.e(contactName + ": TYPE_WORK", " " + phoneNo);
-                                numbers.setWork(phoneNo);
-                                numbersArray.add(phoneNo);
-                                break;
-                            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE:
-                                Log.e(contactName + ": TYPE_WORK_MOBILE", " " + phoneNo);
-                                numbersArray.add(phoneNo);
-                                break;
-                            case ContactsContract.CommonDataKinds.Phone.TYPE_OTHER:
-                                Log.e(contactName + ": TYPE_OTHER", " " + phoneNo);
-                                numbersArray.add(phoneNo);
-                                break;
-                            default:
-                                break;
-                        }
+                    ArrayList<String> emailsArray = new ArrayList<>();
 
+                    while (pCursor.moveToNext()) {
+                        int phoneType = pCursor.getInt(
+                                pCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                        //String isStarred 		= pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.STARRED));
+                        String phoneNo = pCursor.getString(
+                                pCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        numbersArray.add(phoneNo);
                     }
+                    pCursor.close();
+
+                    while (emailCur.moveToNext()) {
+                        // This would allow you get several email addresses
+                        // if the email addresses were stored in an array
+                        String email = emailCur.getString(
+                                emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                        String emailType = emailCur.getString(
+                                emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+
+                        emailsArray.add(email);
+                    }
+                    emailCur.close();
+
                     if (numbersArray.size() > 0) {
                         numbers.setNumbers(numbersArray);
+                        numbers.setEmails(emailsArray);
                         contact.setNumbers(numbers);
                         contactsList.add(contact);
                     }
-                    pCursor.close();
+
                 }
             }
             cursor.close();
@@ -91,4 +91,33 @@ public class ContactManager {
         return contactsList;
     }
 
+    public static void getPhoneType(int phoneType) {
+        switch (phoneType) {
+            case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
+//                Log.e(contactName + ": TYPE_MOBILE", " " + phoneNo);
+//                numbers.setPhone(phoneNo);
+//                numbersArray.add(phoneNo);
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
+//                Log.e(contactName + ": TYPE_HOME", " " + phoneNo);
+//                numbers.setHome(phoneNo);
+//                numbersArray.add(phoneNo);
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
+//                Log.e(contactName + ": TYPE_WORK", " " + phoneNo);
+//                numbers.setWork(phoneNo);
+//                numbersArray.add(phoneNo);
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE:
+//                Log.e(contactName + ": TYPE_WORK_MOBILE", " " + phoneNo);
+//                numbersArray.add(phoneNo);
+                break;
+            case ContactsContract.CommonDataKinds.Phone.TYPE_OTHER:
+//                Log.e(contactName + ": TYPE_OTHER", " " + phoneNo);
+//                numbersArray.add(phoneNo);
+                break;
+            default:
+                break;
+        }
+    }
 }

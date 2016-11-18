@@ -13,55 +13,21 @@
     tools:showIn="@layout/activity_contacts_screen">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Family"
         android:id="@+id/contact_screen_mosaic_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="Family"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editMosaicButton"
-        android:src="@android:drawable/ic_menu_edit"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/contact_screen_mosaic_name_tv"
-        android:layout_alignStart="@+id/contact_screen_mosaic_name_tv"
-        android:clickable="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Choose a contact from below to view their details and modify their settings!"
-        android:id="@+id/textView5"
+    <ListView
+        android:id="@+id/mosaic_contact_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/editMosaicButton"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/contact_screen_mosaic_name_tv"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="24dp"
-        android:textSize="18dp" />
+        android:fastScrollEnabled="true"></ListView>
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/goBacktoMosaicScreenButton"
-        android:src="@android:drawable/ic_menu_revert"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:clickable="true" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/AshleyButton"
-        android:layout_below="@+id/textView5"
-        android:layout_marginTop="41dp"
-        android:src="@drawable/contacts"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 </RelativeLayout>

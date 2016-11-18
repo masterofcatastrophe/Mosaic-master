@@ -10,15 +10,6 @@
     tools:context="codesages.mosaic.mosaicsListScreen"
     tools:showIn="@layout/activity_mosaics_list_screen">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/create_a_mosaic_or_pick_from_the_mosaics_created"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="20sp" />
 
     <ListView
         android:id="@+id/mosaic_listview"
@@ -26,7 +17,6 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView4"
         android:layout_marginTop="14dp"
         android:divider="@null" />
     <!--<it.gmariotti.cardslib.library.recyclerview.view.CardRecyclerView

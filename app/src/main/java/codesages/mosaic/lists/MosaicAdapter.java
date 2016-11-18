@@ -121,6 +121,7 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
                     .load(new File(mosaics.get(position).getImagePath().getPath()))
                     //.placeholder(R.drawable.progress_animation)
                     .error(android.R.drawable.ic_menu_report_image)
+                    .resize(0, 500)
                     .into(viewHolder.img);
         }
 

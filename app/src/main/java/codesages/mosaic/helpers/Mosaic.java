@@ -3,6 +3,7 @@ package codesages.mosaic.helpers;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -14,6 +15,7 @@ public class Mosaic {
     Date CreatedOn;
     Bitmap bitmap;
     ImagePath imagePath;
+    ArrayList<MosaicContact> contacts;
 
     public Mosaic(String name, Date createdOn, Bitmap bitmap) {
         Name = name;
@@ -25,6 +27,14 @@ public class Mosaic {
         Name = name;
         CreatedOn = createdOn;
         this.imagePath = imagePath;
+    }
+
+    public ArrayList<MosaicContact> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(ArrayList<MosaicContact> contacts) {
+        this.contacts = contacts;
     }
 
     public String getName() {

@@ -29,9 +29,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Contact;
 import codesages.mosaic.helpers.ContactManager;
 import codesages.mosaic.helpers.ContactNumbers;
+import codesages.mosaic.helpers.Keys;
+import codesages.mosaic.helpers.MosaicContact;
 import codesages.mosaic.lists.ContactAdapter;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardExpand;
@@ -49,12 +52,14 @@ public class ContactPickActivity extends AppCompatActivity {
     Context ctx;
     String TAG = "ContactPickActivity";
     int selectedIndex = 0;
+    int mosaicIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_pick);
         ctx = this;
+        getMosaicIndex();
         setContacts();
 
     }
@@ -97,18 +102,18 @@ public class ContactPickActivity extends AppCompatActivity {
             @Override
             public void onItemClick(android.widget.AdapterView<?> parent,
                                     View view, int position, long id) {
-                showRadioButtonDialog(contacts.get(position).getNumbers());
+                showRadioButtonDialog(contacts.get(position));
             }
         });
     }
 
-    private void showRadioButtonDialog(final ContactNumbers nums) {
+    private void showRadioButtonDialog(final Contact contact) {
         // custom dialog
         final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //builder.setView(R.layout.contact_dialog);
         builder.setTitle("Pick a Number");
-        builder.setSingleChoiceItems(nums.getNumbers().toArray(new CharSequence[nums.getNumbers().size()]), -1, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(contact.getNumbers().getNumbersEmail().toArray(new CharSequence[contact.getNumbers().getNumbersEmail().size()]), -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 selectedIndex = which;
@@ -117,13 +122,36 @@ public class ContactPickActivity extends AppCompatActivity {
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(ctx, " Added " + nums.getNumbers().get(selectedIndex), Toast.LENGTH_SHORT).show();
+
+                MosaicContact mContact = null;
+                if (contact.getNumbers().getNumbersEmail().get(selectedIndex).contains("Email:")) {
+                    String email = contact.getNumbers().getNumbersEmail().get(selectedIndex);
+                    String emailTrimmed = email.substring(email.indexOf("Email: ") + 7);
+
+                    mContact = new MosaicContact(contact.getName(),
+                            emailTrimmed,
+                            "",
+                            true, "");
+                } else {
+                    mContact = new MosaicContact(contact.getName(),
+                            "",
+                            contact.getNumbers().getNumbersEmail().get(selectedIndex),
+                            false, "");
+                }
+                boolean added = CacheManager.addMosaicContact(ctx, mosaicIndex, mContact);
+                if (added) {
+                    Toast.makeText(ctx, " Added: " + contact.getNumbers().getNumbersEmail().get(selectedIndex), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else
+                    Toast.makeText(ctx, "Could not add the selected Contact ", Toast.LENGTH_SHORT).show();
+
             }
         });
         builder.create().show();
 
 
     }
+
     /*private void setList() {
         ArrayList<Card> cards = new ArrayList<Card>();
 
@@ -146,6 +174,7 @@ public class ContactPickActivity extends AppCompatActivity {
     }*/
 
     // not used
+    /*
     private ArrayList<Card> initCard(ArrayList<Contact> contacts) {
 
         //Init an array of Cards
@@ -197,11 +226,15 @@ public class ContactPickActivity extends AppCompatActivity {
 
         return cards;
     }
-
+*/
     //not used
     private void updateAdapter(ArrayList<Card> cards) {
         if (cards != null) {
             mCardArrayAdapter.addAll(cards);
         }
+    }
+
+    public void getMosaicIndex() {
+        mosaicIndex = getIntent().getIntExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, 0);
     }
 }

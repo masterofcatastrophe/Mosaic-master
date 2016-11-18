@@ -88,4 +88,23 @@ public class CacheManager {
         setMosaicFromCache(ctx, cachedlist);
 
     }
+
+    public static boolean addMosaicContact(Context ctx, int mosaicIndex, MosaicContact mosaicContact) {
+        ArrayList<MosaicContact> contacts = new ArrayList<>();
+        Mosaic mosaic = getMosaicByPosition(ctx, mosaicIndex);
+        if (mosaic == null)
+            return false;
+
+        if (mosaic.getContacts() != null)
+            contacts = mosaic.getContacts();
+        else
+            contacts = new ArrayList<>();
+
+        contacts.add(mosaicContact);
+
+        mosaic.setContacts(contacts);
+        updateMosaicByPosition(ctx, mosaic, mosaicIndex);
+        return true;
+
+    }
 }
