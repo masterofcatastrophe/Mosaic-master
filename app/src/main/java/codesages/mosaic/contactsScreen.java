@@ -34,10 +34,10 @@ public class contactsScreen extends AppCompatActivity {
         super.onResume();
         getMosaic();
         if (mosaic != null) {
-            if (mosaic.getContacts() != null)
+            if (mosaic.getContacts().size() > 0)
                 setlist();
             else
-                Toast.makeText(this, "No Contacts available in " + mosaic.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No Contacts available in " + mosaic.getName(), Toast.LENGTH_LONG).show();
         }
     }
 

@@ -15,7 +15,7 @@ public class Mosaic {
     Date CreatedOn;
     Bitmap bitmap;
     ImagePath imagePath;
-    ArrayList<MosaicContact> contacts;
+    ArrayList<MosaicContact> contacts = new ArrayList<>();
 
     public Mosaic(String name, Date createdOn, Bitmap bitmap) {
         Name = name;
