@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
@@ -42,6 +43,14 @@ public class mosaicsListScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mosaicArrayList = CacheManager.getMosaicFromCache(getApplicationContext());
+        if (!(mosaicArrayList.size() > 0)) {
+            new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Mosaic")
+                    .setContentText("No Mosaics yet, Press the \"+\" button below to Add some")
+                    .show();
+        }
+
+
         setList();
     }
 
@@ -60,14 +69,9 @@ public class mosaicsListScreen extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), MosaicCreationScreen.class);
                 startActivity(intent);
-                //finish();
             }
         });
 
-        //fillThumbIds();
-
-        //mosaicList = (GridView) findViewById(R.id.mosaicList);
-        //mosaicList.setAdapter(new ImageAdapter(this));
 
     }
 

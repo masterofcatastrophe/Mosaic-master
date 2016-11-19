@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
@@ -37,7 +38,10 @@ public class contactsScreen extends AppCompatActivity {
             if (mosaic.getContacts().size() > 0)
                 setlist();
             else
-                Toast.makeText(this, "No Contacts available in " + mosaic.getName(), Toast.LENGTH_LONG).show();
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText(mosaic.getName())
+                        .setContentText("No contacts were added under this Mosaic, Press the \"+\" button below to Add some")
+                        .show();
         }
     }
 

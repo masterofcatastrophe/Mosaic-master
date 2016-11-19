@@ -2,6 +2,7 @@ package codesages.mosaic.helpers;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -9,6 +10,8 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 
 /**
@@ -19,6 +22,7 @@ public class ContactManager {
 
     public static ArrayList<Contact> ReadPhoneContacts(Context cntx) //This Context parameter is nothing but your Activity class's Context
     {
+
         ArrayList<Contact> contactsList = new ArrayList<>();
         Cursor cursor = cntx.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         Integer contactsCount = cursor.getCount(); // get how many contacts you have in your contacts list
@@ -28,7 +32,7 @@ public class ContactManager {
                 String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
                 Contact contact = new Contact(contactName, id);
-                Log.d("ContactManager", "ContactName: " + contactName + " Id: " + id);
+                //Log.d("ContactManager", "ContactName: " + contactName + " Id: " + id);
                 if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     //the below cursor will give you details for multiple contacts
                     Cursor pCursor = cntx.getContentResolver().query(
@@ -85,8 +89,10 @@ public class ContactManager {
                 return o1.getName().compareTo(o2.getName());
             }
         });
+
         return contactsList;
     }
+
 
     public static void getPhoneType(int phoneType) {
         switch (phoneType) {

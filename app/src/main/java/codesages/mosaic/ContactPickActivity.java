@@ -2,34 +2,23 @@ package codesages.mosaic;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.text.Html;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Contact;
 import codesages.mosaic.helpers.ContactManager;
@@ -38,13 +27,7 @@ import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.MosaicContact;
 import codesages.mosaic.lists.ContactAdapter;
 import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardExpand;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.internal.base.BaseCard;
 import it.gmariotti.cardslib.library.recyclerview.internal.CardArrayRecyclerViewAdapter;
-import it.gmariotti.cardslib.library.recyclerview.view.CardRecyclerView;
-
-import static codesages.mosaic.helpers.ContactManager.ReadPhoneContacts;
 
 public class ContactPickActivity extends AppCompatActivity {
 
@@ -71,11 +54,11 @@ public class ContactPickActivity extends AppCompatActivity {
         if (requestCode == 100) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted
-                contacts = ContactManager.ReadPhoneContacts(getApplicationContext());
-                setList();
+                new getContacts().execute();
+
             } else {
                 contacts = new ArrayList<>();
-                Toast.makeText(this, "Until you grant the permission, we canot display the your Contacts", Toast.LENGTH_SHORT).show();
+                showSweetAlertPermision();
                 finish();
             }
         }
@@ -87,26 +70,28 @@ public class ContactPickActivity extends AppCompatActivity {
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
             // Android version is lesser than 6.0 or the permission is already granted.
-            contacts = ContactManager.ReadPhoneContacts(getApplicationContext());
-            setList();
+
+            new getContacts().execute();
+
         }
     }
 
     private void setList() {
 
         ListView list = (ListView) findViewById(R.id.contact_listview);
+        if (list != null) {
+            ContactAdapter adapter = new ContactAdapter((Activity) ctx, contacts);
+            list.setAdapter(adapter);
 
-        ContactAdapter adapter = new ContactAdapter((Activity) ctx, contacts);
-        list.setAdapter(adapter);
-
-        list.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(android.widget.AdapterView<?> parent,
-                                    View view, int position, long id) {
-                Log.d(TAG, "onItemClick: ");
-                showRadioButtonDialog(contacts.get(position));
-            }
-        });
+            list.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(android.widget.AdapterView<?> parent,
+                                        View view, int position, long id) {
+                    Log.d(TAG, "onItemClick: ");
+                    showRadioButtonDialog(contacts.get(position));
+                }
+            });
+        }
     }
 
     private void showRadioButtonDialog(final Contact contact) {
@@ -132,17 +117,58 @@ public class ContactPickActivity extends AppCompatActivity {
                 ListView lw = ((AlertDialog) dialog).getListView();
                 SparseBooleanArray checkedItem = lw.getCheckedItemPositions();
                 boolean added = AddContactToMosaic(checkedItem, contact);
-                if (added) {
-                    Toast.makeText(ctx,
-                            " Added: " + contact.getNumbers().getNumbersEmail().get(selectedIndex), Toast.LENGTH_SHORT).show();
-                    finish();
-                } else
-                    Toast.makeText(ctx,
-                            "Could not add the selected Contact ", Toast.LENGTH_SHORT).show();
-
+                ShowSweetAlert(added, contact);
             }
         });
         builder.create().show();
+
+
+    }
+
+    private void ShowSweetAlert(boolean added, Contact contact) {
+        if (added) {
+            //Toast.makeText(ctx,
+            //      " Added: " + contact.getNumbers().getNumbersEmail().get(selectedIndex), Toast.LENGTH_SHORT).show();
+            new SweetAlertDialog(ctx, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Success!")
+                    .setContentText(" Added: " + contact.getNumbers().getNumbersEmail().get(selectedIndex))
+                    .setConfirmText("Ok")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismiss();
+                            finish();
+                        }
+                    })
+                    .show();
+
+        } else
+            new SweetAlertDialog(ctx, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Fail!")
+                    .setContentText(" Could not Add the contact! ")
+                    .setConfirmText("Dismiss")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismiss();
+                        }
+                    })
+                    .show();
+    }
+
+    private void showSweetAlertPermision() {
+        new SweetAlertDialog(ctx, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Fail!")
+                .setContentText("Until you grant the permission, we cannot display your Contacts")
+                .setConfirmText("Ok")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        finish();
+                    }
+                })
+                .show();
 
 
     }
@@ -169,89 +195,40 @@ public class ContactPickActivity extends AppCompatActivity {
         return CacheManager.addMosaicContact(ctx, mosaicIndex, mContact);
     }
 
-    /*private void setList() {
-        ArrayList<Card> cards = new ArrayList<Card>();
-
-
-        mCardArrayAdapter = new CardArrayRecyclerViewAdapter(getApplicationContext(), cards);
-
-        //Staggered grid view
-        CardRecyclerView mRecyclerView = (CardRecyclerView) findViewById(R.id.carddemo_recyclerview);
-        mRecyclerView.setHasFixedSize(false);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-        //Set the empty view
-        if (mRecyclerView != null) {
-            mRecyclerView.setAdapter(mCardArrayAdapter);
-        }
-
-        ArrayList<Card> _cards = initCard(contacts);
-        updateAdapter(_cards);
-
-    }*/
-
-    // not used
-    /*
-    private ArrayList<Card> initCard(ArrayList<Contact> contacts) {
-
-        //Init an array of Cards
-        ArrayList<Card> cards = new ArrayList<Card>();
-        for (int i = 0; i < contacts.size(); i++) {
-            Contact contact = contacts.get(i);
-            Card card = new Card(getApplicationContext());
-            String title = "";
-
-            //skip if all empty
-            if (contact.getNumbers().getHome() == "" && contact.getNumbers().getPhone() == "" && contact.getNumbers().getWork() == "")
-                continue;
-
-            if (contact.getNumbers().getHome() != "")
-                title += "Home " + contact.getNumbers().getHome();
-            if (contact.getNumbers().getPhone() != "")
-                title += "\nMobile " + contact.getNumbers().getPhone();
-            if (contact.getNumbers().getWork() != "")
-                title += "\nWork " + contact.getNumbers().getWork();
-
-            card.setTitle(title);
-            //Create a CardHeader
-            CardHeader header = new CardHeader(getApplicationContext());
-
-            //Set the header title
-            header.setTitle(contact.getName());
-
-
-            //Add a popup menu. This method set OverFlow button to visible
-            header.setPopupMenu(R.menu.popupmain, new CardHeader.OnClickCardHeaderPopupMenuListener() {
-                @Override
-                public void onMenuItemClick(BaseCard card, MenuItem item) {
-                    Toast.makeText(getApplicationContext(), "Click on " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            card.addCardHeader(header);
-
-
-            //Add ClickListener
-            card.setOnClickListener(new Card.OnCardClickListener() {
-                @Override
-                public void onClick(Card card, View view) {
-                    Toast.makeText(getApplicationContext(), "Click Listener card=" + card.getTitle(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            cards.add(card);
-        }
-
-        return cards;
-    }
-*/
-    //not used
-    private void updateAdapter(ArrayList<Card> cards) {
-        if (cards != null) {
-            mCardArrayAdapter.addAll(cards);
-        }
-    }
 
     public void getMosaicIndex() {
         mosaicIndex = getIntent().getIntExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, 0);
+    }
+
+    private class getContacts extends AsyncTask<Void, Void, Void> {
+        SweetAlertDialog pDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pDialog = new SweetAlertDialog(ctx, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("Loading");
+            pDialog.setCancelable(false);
+            pDialog.show();
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            pDialog.dismiss();
+            setList();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            contacts = ContactManager.ReadPhoneContacts(getApplicationContext());
+
+            return null;
+        }
     }
 }

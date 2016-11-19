@@ -2,9 +2,11 @@ package codesages.mosaic;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.Date;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.ImageManager;
 import codesages.mosaic.helpers.ImagePath;
@@ -33,12 +36,13 @@ public class MosaicCreationScreen extends AppCompatActivity {
     AddMosaic addTask;
     ImagePath imagePath;
     boolean isImageSet = false;
+    Context ctx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mosaic_creation_screen);
-
+        ctx = this;
         Button saveNewMosaicButton = (Button) findViewById(R.id.saveNewMosaicButton);
         Button pickImageButton = (Button) findViewById(R.id.uploadMosaicImageButton);
         final EditText mosaicNameEt = (EditText) findViewById(R.id.mosaic_creation_mosaic_name_et);
@@ -60,8 +64,18 @@ public class MosaicCreationScreen extends AppCompatActivity {
                     addTask.execute(mosaic);
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Enter a Name First and Select a Photo", Toast.LENGTH_SHORT).show();
-                    mosaicNameEt.requestFocus();
+                    new SweetAlertDialog(ctx, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Hold On...")
+                            .setContentText("Enter a Name First and Select a Photo")
+                            .setConfirmText("Ok")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    mosaicNameEt.requestFocus();
+                                    sweetAlertDialog.dismiss();
+                                }
+                            })
+                            .show();
                 }
             }
         });
@@ -119,18 +133,17 @@ public class MosaicCreationScreen extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private ProgressDialog CreatedDialog() {
-        ProgressDialog dialog = new ProgressDialog(MosaicCreationScreen.this); // this = YourActivity
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setMessage("Adding. Please wait...");
-        dialog.setIndeterminate(true);
-        dialog.setCancelable(false);
-        return dialog;
+    private SweetAlertDialog CreatedDialog() {
+        SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        return pDialog;
 
     }
 
     private class AddMosaic extends AsyncTask<Mosaic, Void, Void> {
-        ProgressDialog dialog = CreatedDialog();
+        SweetAlertDialog dialog = CreatedDialog();
 
         @Override
         protected Void doInBackground(Mosaic... params) {
@@ -142,14 +155,13 @@ public class MosaicCreationScreen extends AppCompatActivity {
 
         protected void onPreExecute() {
             super.onPreExecute();
-            //dialog.show();
-            Toast.makeText(getApplicationContext(), "Adding New Mosaic...", Toast.LENGTH_SHORT).show();
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            //dialog.dismiss();
+            dialog.dismiss();
             Toast.makeText(getApplicationContext(), "New Mosaic have been Created!", Toast.LENGTH_SHORT).show();
             finish();
         }
