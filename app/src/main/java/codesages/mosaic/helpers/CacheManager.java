@@ -117,32 +117,44 @@ public class CacheManager {
                 Log.d(TAG, "mergeWithCached: " + contacts.get(i).getName() + "==" + mosaicContact.getName());
                 cachedMosaicContact = contacts.get(i);
 
+                Log.d(TAG, "mergeWithCached: Loop Numbers");
                 for (int k = 0; k < mosaicContact.getContactNumbers().getNumbers().size(); k++) {
+                    Log.d(TAG, "mergeWithCached: " + mosaicContact.getName());
                     boolean innerFound = false;
                     String neW = mosaicContact.getContactNumbers().getNumbers().get(k);
+                    Log.d(TAG, "mergeWithCached: New Number" + neW);
                     for (int j = 0; j < cachedMosaicContact.getContactNumbers().getNumbers().size(); j++) {
-                        String cached = mosaicContact.getContactNumbers().getNumbers().get(j);
+                        String cached = cachedMosaicContact.getContactNumbers().getNumbers().get(j);
+                        Log.d(TAG, "mergeWithCached: Cached Number" + cached);
                         if (neW.equals(cached)) {
-                            innerFound = true;
-                            //break;
-                        }
-                    }
-                    if (!innerFound) {
-                        contacts.get(i).getContactNumbers().getNumbers().add(neW);
-
-                    }
-                }
-                for (int k = 0; k < mosaicContact.getContactNumbers().getEmails().size(); k++) {
-                    boolean innerFound = false;
-                    String neW = mosaicContact.getContactNumbers().getEmails().get(k);
-                    for (int j = 0; j < cachedMosaicContact.getContactNumbers().getEmails().size(); j++) {
-                        String cached = mosaicContact.getContactNumbers().getEmails().get(j);
-                        if (neW.equals(cached)) {
+                            Log.d(TAG, "mergeWithCached: EQUAL");
                             innerFound = true;
                             break;
                         }
                     }
                     if (!innerFound) {
+                        Log.d(TAG, "mergeWithCached: ADD new to Cached");
+                        contacts.get(i).getContactNumbers().getNumbers().add(neW);
+
+                    }
+                }
+                Log.d(TAG, "mergeWithCached: Loop Emails");
+                for (int k = 0; k < mosaicContact.getContactNumbers().getEmails().size(); k++) {
+                    Log.d(TAG, "mergeWithCached: " + mosaicContact.getName());
+                    boolean innerFound = false;
+                    String neW = mosaicContact.getContactNumbers().getEmails().get(k);
+                    Log.d(TAG, "mergeWithCached: New Email" + neW);
+                    for (int j = 0; j < cachedMosaicContact.getContactNumbers().getEmails().size(); j++) {
+                        String cached = cachedMosaicContact.getContactNumbers().getEmails().get(j);
+                        Log.d(TAG, "mergeWithCached: Cached Email" + cached);
+                        if (neW.equals(cached)) {
+                            Log.d(TAG, "mergeWithCached: EQUAL");
+                            innerFound = true;
+                            break;
+                        }
+                    }
+                    if (!innerFound) {
+                        Log.d(TAG, "mergeWithCached: ADD new to Cached");
                         contacts.get(i).getContactNumbers().getEmails().add(neW);
 
                     }

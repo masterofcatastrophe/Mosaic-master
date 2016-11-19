@@ -11,6 +11,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -121,7 +122,7 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
         String strContact = "";
         ContactNumbers contactNumbers = conatcts.get(position).getContactNumbers();
         for (int i = 0; i < contactNumbers.getNumbersEmail().size(); i++) {
-            strContact += contactNumbers.getNumbersEmail().get(i)+", ";
+            strContact += contactNumbers.getNumbersEmail().get(i) + ", ";
         }
         viewHolder.contact.setText(strContact);
 
@@ -144,10 +145,21 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
             }
         }
 
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+        //int color = generator.getRandomColor();
+        int color = generator.getColor(conatcts.get(position).getName());
         TextDrawable drawable = TextDrawable.builder()
-                .buildRect(init.toUpperCase(), colors[new Random().nextInt(6)]);
-        viewHolder.img.setImageDrawable(drawable);
+                .buildRect(init.toUpperCase(), color);
 
+
+        viewHolder.img.setImageDrawable(drawable);
+        if (position % 2 == 0) {
+            //viewHolder.img.setBackgroundResource(R.drawable.crack);
+            convertView.setBackgroundColor(Color.LTGRAY);
+        } else {
+            //viewHolder.img.setBackgroundResource(R.drawable.purple_flower_fresh);
+            convertView.setBackgroundColor(Color.TRANSPARENT);
+        }
         return convertView;
     }
 

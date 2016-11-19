@@ -14,6 +14,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -126,8 +127,12 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
             }
         }
 
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+        //int color = generator.getRandomColor();
+        int color = generator.getColor(conatcts.get(position).getName());
         TextDrawable drawable = TextDrawable.builder()
-                .buildRect(init.toUpperCase(), colors[new Random().nextInt(6)]);
+                .buildRect(init.toUpperCase(), color);
+
         viewHolder.img.setImageDrawable(drawable);
 
         return convertView;

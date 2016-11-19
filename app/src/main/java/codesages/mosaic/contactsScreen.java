@@ -104,6 +104,16 @@ public class contactsScreen extends AppCompatActivity {
         mosaicIndex = getIntent().getIntExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, 0);
         Log.d(TAG, "getMosaic: " + mosaicIndex);
         mosaic = CacheManager.getMosaicByPosition(this, mosaicIndex);
+        for (int i = 0; i < mosaic.getContacts().size(); i++) {
+            Log.d(TAG, "getMosaic: " + mosaic.getContacts().get(i).getName());
+            for (int j = 0; j < mosaic.getContacts().get(i).getContactNumbers().getEmails().size(); j++) {
+                Log.d(TAG, "getMosaic: Emails: " + mosaic.getContacts().get(i).getContactNumbers().getEmails().get(j));
+            }
+            for (int j = 0; j < mosaic.getContacts().get(i).getContactNumbers().getNumbers().size(); j++) {
+                Log.d(TAG, "getMosaic: Phone: " + mosaic.getContacts().get(i).getContactNumbers().getNumbers().get(j));
+            }
+
+        }
     }
 
 }
