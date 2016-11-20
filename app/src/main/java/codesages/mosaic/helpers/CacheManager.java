@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by DELL on 12/11/2016.
@@ -106,6 +107,19 @@ public class CacheManager {
         updateMosaicByPosition(ctx, mosaic, mosaicIndex);
         return true;
 
+    }
+
+    public static boolean updateMosaicContact(Context ctx, int mosaicIndex, int contactIndex, Date lastContactedOn) {
+        Log.d(TAG, "updateMosaicContact: M.index: " + mosaicIndex + " C.index: " + contactIndex);
+        ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);
+        if (mosaics.size() > mosaicIndex) {
+            if (mosaics.get(mosaicIndex).getContacts().size() > contactIndex) {
+                mosaics.get(mosaicIndex).getContacts().get(contactIndex).setLastCall(lastContactedOn);
+                updateMosaicByPosition(ctx, mosaics.get(mosaicIndex), mosaicIndex);
+                return true;
+            }
+        }
+        return false;
     }
 
     public static ArrayList<MosaicContact> mergeWithCached(ArrayList<MosaicContact> contacts, MosaicContact mosaicContact) {

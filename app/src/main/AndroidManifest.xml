@@ -46,11 +46,10 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <receiver
-            android:name=".receiver.OutgoingCallsReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+        <receiver android:name=".receiver.OutgoingCallsReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
         </receiver>
     </application>
 

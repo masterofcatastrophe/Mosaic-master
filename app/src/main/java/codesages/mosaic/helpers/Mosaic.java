@@ -2,6 +2,7 @@ package codesages.mosaic.helpers;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,9 @@ public class Mosaic {
     Bitmap bitmap;
     ImagePath imagePath;
     ArrayList<MosaicContact> contacts = new ArrayList<>();
+
+    public Mosaic() {
+    }
 
     public Mosaic(String name, Date createdOn, Bitmap bitmap) {
         Name = name;
@@ -67,5 +71,51 @@ public class Mosaic {
 
     public void setImagePath(ImagePath imagePath) {
         this.imagePath = imagePath;
+    }
+
+
+    public static class FindMosaic {
+        public int mosaicIndex;
+        public int contactIndex;
+        static String TAG = "FindMosaic";
+
+        public FindMosaic(int mosaicIndex, int contactIndex) {
+            this.mosaicIndex = mosaicIndex;
+            this.contactIndex = contactIndex;
+        }
+
+        public static FindMosaic findMosaic(ArrayList<Mosaic> mosaics, String outGoingNumber) {
+            Log.d(TAG, "findMosaic: ");
+            for (int i = 0; i < mosaics.size(); i++) {
+                Mosaic mosaic = mosaics.get(i);
+                ArrayList<MosaicContact> mosaicConntacts = mosaic.getContacts();
+                for (int j = 0; j < mosaicConntacts.size(); j++) {
+                    Log.d(TAG, "findMosaic: Contact: " + mosaicConntacts.get(j).getName());
+                    ArrayList<String> contactNumber = mosaic.getContacts().get(j).getContactNumbers().getNumbers();
+                    ArrayList<String> contactEmails = mosaic.getContacts().get(j).getContactNumbers().getEmails();
+                    for (int k = 0; k < contactNumber.size(); k++) {
+                        Log.d(TAG, "findMosaic: Numbers: " + contactNumber.get(k));
+                        if (contactNumber.get(k).replaceAll("\\s+", "")
+                                .contains(outGoingNumber.replaceAll("\\s+", ""))
+                                || outGoingNumber.replaceAll("\\s+", "")
+                                .contains(contactNumber.get(k).replaceAll("\\s+", ""))) {
+                            Log.d(TAG, "findMosaic: MATCH-> " + contactNumber.get(k) + " AND " + (outGoingNumber));
+                            return new FindMosaic(i, j);
+                        }
+                    }
+                    for (int k = 0; k < contactEmails.size(); k++) {
+                        Log.d(TAG, "findMosaic: Numbers: " + contactEmails.get(k));
+                        if (contactEmails.get(k).replaceAll("\\s+", "")
+                                .contains(outGoingNumber.replaceAll("\\s+", ""))
+                                || outGoingNumber.replaceAll("\\s+", "")
+                                .contains(contactEmails.get(k).replaceAll("\\s+", ""))) {
+                            Log.d(TAG, "findMosaic: MATCH-> " + contactEmails.get(k) + " AND " + (outGoingNumber));
+                            return new FindMosaic(i, j);
+                        }
+                    }
+                }
+            }
+            return null;
+        }
     }
 }

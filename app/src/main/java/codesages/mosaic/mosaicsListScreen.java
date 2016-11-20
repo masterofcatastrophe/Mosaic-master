@@ -132,24 +132,27 @@ public class mosaicsListScreen extends AppCompatActivity {
         new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Hold On!")
                 .setContentText("We will not be able to monitor the calls!")
-                .setConfirmText("Grant Permission")
+                .setConfirmText("Allow it")
                 .setCancelText("I Don't Care!")
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         enableOutgoingReceiver(false);
+                        sweetAlertDialog.dismiss();
                     }
                 })
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         checkOutgoingCallPermission();
+                        sweetAlertDialog.dismiss();
                     }
                 })
                 .show();
     }
 
     public void enableOutgoingReceiver(boolean enable) {
+        Log.d(TAG, "enableOutgoingReceiver: " + enable);
         int flag = (enable ?
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED);
