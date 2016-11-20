@@ -177,7 +177,8 @@ public class ContactPickActivity extends AppCompatActivity {
 
         ArrayList<String> emails = new ArrayList<String>();
         ArrayList<String> phonenums = new ArrayList<String>();
-
+        if (!(checkedItem.size() > 0))
+            return false;
         for (int i = 0; i < contact.getNumbers().getNumbersEmail().size(); i++) {
             if (checkedItem.get(i)) {
                 if (contact.getNumbers().getNumbersEmail().get(i).contains("Email:")) {
@@ -194,7 +195,6 @@ public class ContactPickActivity extends AppCompatActivity {
         MosaicContact mContact = new MosaicContact(contact.getName(), new ContactNumbers(phonenums, emails));
         return CacheManager.addMosaicContact(ctx, mosaicIndex, mContact);
     }
-
 
     public void getMosaicIndex() {
         mosaicIndex = getIntent().getIntExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, 0);
