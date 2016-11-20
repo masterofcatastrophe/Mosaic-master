@@ -1,9 +1,13 @@
 package codesages.mosaic;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +30,7 @@ import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
 import codesages.mosaic.lists.MosaicAdapter;
+import codesages.mosaic.receiver.OutgoingCallsReceiver;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.recyclerview.internal.CardArrayRecyclerViewAdapter;
@@ -72,7 +77,7 @@ public class mosaicsListScreen extends AppCompatActivity {
             }
         });
 
-
+        checkOutgoingCallPermission();
     }
 
     private void setList() {
@@ -102,144 +107,60 @@ public class mosaicsListScreen extends AppCompatActivity {
             }
         });
     }
-/*    private void setList() {
-        ArrayList<Card> cards = new ArrayList<Card>();
 
-
-        mCardArrayAdapter = new CardArrayRecyclerViewAdapter(getApplicationContext(), cards);
-
-        //Staggered grid view
-        CardRecyclerView mRecyclerView = (CardRecyclerView) findViewById(R.id.carddemo_recyclerview);
-        mRecyclerView.setHasFixedSize(false);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-        //Set the empty view
-        if (mRecyclerView != null) {
-            mRecyclerView.setAdapter(mCardArrayAdapter);
-        }
-
-        ArrayList<Card> _cards = initCard(mosaicArrayList);
-        updateAdapter(_cards);
-
-    }*/
-
-
-    private ArrayList<Card> initCard(ArrayList<Mosaic> mosaics) {
-
-        //Init an array of Cards
-        ArrayList<Card> cards = new ArrayList<Card>();
-        for (int i = 0; i < mosaics.size(); i++) {
-            final Mosaic mosaic = mosaics.get(i);
-            Card card = new Card(getApplicationContext());
-            String title = "";
-
-            //skip if all empty
-
-            card.setTitle(mosaic.getName());
-            //Create a CardHeader
-            //CardHeader header = new CardHeader(getApplicationContext());
-            CardThumbnail thump = new CardThumbnail(getApplicationContext());
-            thump.setCustomSource(new CardThumbnail.CustomSource() {
-                @Override
-                public String getTag() {
-                    return mosaic.getName() + "-Tag";
-                }
-
-                @Override
-                public Bitmap getBitmap() {
-                    return mosaic.getBitmap();
-                }
-            });
-            //Set the header title
-            //header.setTitle(mosaic.getName());
-
-
-            //Add a popup menu. This method set OverFlow button to visible
-           /* header.setPopupMenu(R.menu.popupmain, new CardHeader.OnClickCardHeaderPopupMenuListener() {
-                @Override
-                public void onMenuItemClick(BaseCard card, MenuItem item) {
-                    Toast.makeText(getApplicationContext(), "Click on " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            card.addCardHeader(header);
-*/
-            card.addCardThumbnail(thump);
-
-            //Add ClickListener
-            card.setOnClickListener(new Card.OnCardClickListener() {
-                @Override
-                public void onClick(Card card, View view) {
-                    Toast.makeText(getApplicationContext(), "Click Listener card=" + card.getTitle(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            cards.add(card);
-        }
-
-        return cards;
-    }
-
-    private void updateAdapter(ArrayList<Card> cards) {
-        if (cards != null) {
-            mCardArrayAdapter.addAll(cards);
-        }
-    }
-
-    private void fillThumbIds() {
-        mThumbIds = new ArrayList();
-        // somehow get older thumbnail ids if necessary (i.e. from storage)
-        // and add to ArrayList like this:
-        // mThumbIds.add(R.drawable.family);
-        // mThumbIds.add(R.drawable.project);
-
-        // assuming we transmit resource id's: use an int array with the Intent
-        int[] newThumbIds = getIntent().getIntArrayExtra(THUMB_IDS);
-        if (newThumbIds != null) {
-            // loop through the array to add new thumb ids
-            for (int i = 0; i < newThumbIds.length; i++) {
-                mThumbIds.add(newThumbIds[i]);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == 101) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "onRequestPermissionsResult: Permission Granted");
+                enableOutgoingReceiver(true);
+            } else {
+                showPermissionSweetAlert();
             }
         }
     }
 
-    // Note: mthumbIds no longer as array but as ArrayList above!
-    public class ImageAdapter extends BaseAdapter {
-        private Context mContext;
-
-        public ImageAdapter(Context c) {
-            mContext = c;
+    private void checkOutgoingCallPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, 101);
         }
+    }
 
-        //@Override
-        public int getCount() {
-            return mThumbIds.size();
-        }
+    public void showPermissionSweetAlert() {
+        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Hold On!")
+                .setContentText("We will not be able to monitor the calls!")
+                .setConfirmText("Grant Permission")
+                .setCancelText("I Don't Care!")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        enableOutgoingReceiver(false);
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        checkOutgoingCallPermission();
+                    }
+                })
+                .show();
+    }
 
-        public Object getItem(int position) {
-            return null;
-        }
+    public void enableOutgoingReceiver(boolean enable) {
+        int flag = (enable ?
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED);
 
-        public long getItemId(int position) {
-            return 0;
-        }
+        ComponentName component = new ComponentName(mosaicsListScreen.this, OutgoingCallsReceiver.class);
 
-        public View getView(final int position, View convertView, ViewGroup parent) {
-
-            ImageView imageView = new ImageView(mContext);
-            if (mosaicArrayList.get(position).getBitmap() != null) {
-                mosaicArrayList.get(position).getBitmap();
-            }
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "onClick: " + position);
-                    Intent intent = new Intent(getApplicationContext(), contactsScreen.class);
-                    intent.putExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, position);
-                    startActivity(intent);
-                }
-            });
-            return imageView;
-        }
+        getPackageManager().setComponentEnabledSetting(
+                component,
+                flag,
+                PackageManager.DONT_KILL_APP
+        );
     }
 }
+
