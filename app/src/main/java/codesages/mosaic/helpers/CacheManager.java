@@ -39,6 +39,20 @@ public class CacheManager {
     static String TAG = "CacheManager";
     public static String MOSAIC_SHARED_PREFERENCE = "mosaic_prefs";
     public static String MOSAIC_LIST = "mosaic_list";
+    public static String OBSERVER_FLAG = "observer_flag";
+
+    public static boolean getOugoingSMSObserverFlag(Context ctx) {
+
+        SharedPreferences sharedpref = ctx.getSharedPreferences(MOSAIC_SHARED_PREFERENCE, 0);
+        boolean flag = sharedpref.getBoolean(OBSERVER_FLAG, false);
+        Log.d(TAG, "getOugoingSMSObserverFlag: " + flag);
+        return flag;
+    }
+
+    public static void setOugoingSMSObserverFlag(Context ctx, boolean isEnabled) {
+        SharedPreferences sharedpref = ctx.getSharedPreferences(MOSAIC_SHARED_PREFERENCE, 0);
+        sharedpref.edit().putBoolean(OBSERVER_FLAG, isEnabled).commit();
+    }
 
     public static ArrayList<Mosaic> getMosaicFromCache(Context ctx) {
         Log.d(TAG, "getMosaicFromCache: ");
@@ -128,47 +142,47 @@ public class CacheManager {
         for (int i = 0; i < contacts.size(); i++) {
             if (contacts.get(i).getName().equals(mosaicContact.getName())) {
                 nameFound = true;
-                Log.d(TAG, "mergeWithCached: " + contacts.get(i).getName() + "==" + mosaicContact.getName());
+                //Log.d(TAG, "mergeWithCached: " + contacts.get(i).getName() + "==" + mosaicContact.getName());
                 cachedMosaicContact = contacts.get(i);
 
-                Log.d(TAG, "mergeWithCached: Loop Numbers");
+                //Log.d(TAG, "mergeWithCached: Loop Numbers");
                 for (int k = 0; k < mosaicContact.getContactNumbers().getNumbers().size(); k++) {
-                    Log.d(TAG, "mergeWithCached: " + mosaicContact.getName());
+                    //Log.d(TAG, "mergeWithCached: " + mosaicContact.getName());
                     boolean innerFound = false;
                     String neW = mosaicContact.getContactNumbers().getNumbers().get(k);
-                    Log.d(TAG, "mergeWithCached: New Number" + neW);
+                    //Log.d(TAG, "mergeWithCached: New Number" + neW);
                     for (int j = 0; j < cachedMosaicContact.getContactNumbers().getNumbers().size(); j++) {
                         String cached = cachedMosaicContact.getContactNumbers().getNumbers().get(j);
-                        Log.d(TAG, "mergeWithCached: Cached Number" + cached);
+                        //Log.d(TAG, "mergeWithCached: Cached Number" + cached);
                         if (neW.equals(cached)) {
-                            Log.d(TAG, "mergeWithCached: EQUAL");
+                            //Log.d(TAG, "mergeWithCached: EQUAL");
                             innerFound = true;
                             break;
                         }
                     }
                     if (!innerFound) {
-                        Log.d(TAG, "mergeWithCached: ADD new to Cached");
+                        //Log.d(TAG, "mergeWithCached: ADD new to Cached");
                         contacts.get(i).getContactNumbers().getNumbers().add(neW);
 
                     }
                 }
-                Log.d(TAG, "mergeWithCached: Loop Emails");
+                //Log.d(TAG, "mergeWithCached: Loop Emails");
                 for (int k = 0; k < mosaicContact.getContactNumbers().getEmails().size(); k++) {
-                    Log.d(TAG, "mergeWithCached: " + mosaicContact.getName());
+                    //Log.d(TAG, "mergeWithCached: " + mosaicContact.getName());
                     boolean innerFound = false;
                     String neW = mosaicContact.getContactNumbers().getEmails().get(k);
-                    Log.d(TAG, "mergeWithCached: New Email" + neW);
+                   //Log.d(TAG, "mergeWithCached: New Email" + neW);
                     for (int j = 0; j < cachedMosaicContact.getContactNumbers().getEmails().size(); j++) {
                         String cached = cachedMosaicContact.getContactNumbers().getEmails().get(j);
-                        Log.d(TAG, "mergeWithCached: Cached Email" + cached);
+                        //Log.d(TAG, "mergeWithCached: Cached Email" + cached);
                         if (neW.equals(cached)) {
-                            Log.d(TAG, "mergeWithCached: EQUAL");
+                            //Log.d(TAG, "mergeWithCached: EQUAL");
                             innerFound = true;
                             break;
                         }
                     }
                     if (!innerFound) {
-                        Log.d(TAG, "mergeWithCached: ADD new to Cached");
+                        //Log.d(TAG, "mergeWithCached: ADD new to Cached");
                         contacts.get(i).getContactNumbers().getEmails().add(neW);
 
                     }
@@ -176,7 +190,7 @@ public class CacheManager {
             }
         }
         if (!nameFound) {
-            Log.d(TAG, "mergeWithCached: Name not found");
+            //Log.d(TAG, "mergeWithCached: Name not found");
             contacts.add(mosaicContact);
         }
         return contacts;

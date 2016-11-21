@@ -6,8 +6,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Cache;
+
 import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -28,17 +32,15 @@ import codesages.mosaic.helpers.Mosaic;
 import codesages.mosaic.lists.MosaicAdapter;
 import codesages.mosaic.receiver.IncomingCallsReceiver;
 import codesages.mosaic.receiver.OutgoingCallsReceiver;
+import codesages.mosaic.receiver.OutgoingSMSObserver;
 import codesages.mosaic.receiver.ReceiversHelper;
 import it.gmariotti.cardslib.library.recyclerview.internal.CardArrayRecyclerViewAdapter;
 
 public class mosaicsListScreen extends AppCompatActivity {
 
-    public static final String THUMB_IDS = "";
-    public static final String TAG = "MosiacListScreen";
-    private GridView mosaicList;
-    private ArrayList<Integer> mThumbIds;
+    static final Uri SMS_STATUS_URI = Uri.parse("content://sms");
+    static final String TAG = "MosiacListScreen";
     private ArrayList<Mosaic> mosaicArrayList = new ArrayList<>();
-    CardArrayRecyclerViewAdapter mCardArrayAdapter;
     Context ctx;
 
     @Override
@@ -77,6 +79,10 @@ public class mosaicsListScreen extends AppCompatActivity {
         });
 
         checkCallsPermissions();
+
+        //if (!CacheManager.getOugoingSMSObserverFlag(ctx)) {
+            startougoingSMSObserver();
+        //}
     }
 
     private void setList() {
@@ -126,33 +132,48 @@ public class mosaicsListScreen extends AppCompatActivity {
             } else {
                 showPermissionSweetAlert(102);
             }
+        } else if (requestCode == 103) {
+            //103 READ SMS
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "onRequestPermissionsResult: Permission Granted 103/4");
+                ReceiversHelper.enableInComingSMSReceiver(ctx, true);
+            } else {
+                showPermissionSweetAlert(103);
+            }
         }
     }
 
     private void checkCallsPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, 101);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 102);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, 101);
+            }
+            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 102);
+            }
+            if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS}, 103);
+            }
+
         }
     }
 
     public void showPermissionSweetAlert(final int flag) {
         new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Hold On!")
-                .setContentText("We will not be able to monitor the calls!")
+                .setContentText("We will not be able to monitor the Calls/SMS!")
                 .setConfirmText("Allow it")
                 .setCancelText("I Don't Care!")
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        if(flag == 101)
-                            ReceiversHelper.enableOutgoingReceiver(ctx,false);
-                        else if(flag == 102)
-                            ReceiversHelper.enableInComingReceiver(ctx,false);
+                        if (flag == 101)
+                            ReceiversHelper.enableOutgoingReceiver(ctx, false);
+                        else if (flag == 102)
+                            ReceiversHelper.enableInComingReceiver(ctx, false);
+                        else if (flag == 103)
+                            ReceiversHelper.enableInComingSMSReceiver(ctx, false);
                         sweetAlertDialog.dismiss();
                     }
                 })
@@ -164,6 +185,14 @@ public class mosaicsListScreen extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    public void startougoingSMSObserver() {
+        Log.d(TAG, "startougoingSMSObserver: ");
+        OutgoingSMSObserver smsSentObserver = new OutgoingSMSObserver(ctx, new Handler());
+        ctx.getContentResolver().registerContentObserver(SMS_STATUS_URI, true, smsSentObserver);
+        CacheManager.setOugoingSMSObserverFlag(ctx, true);
+
     }
 
 

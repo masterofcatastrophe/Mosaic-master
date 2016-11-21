@@ -14,6 +14,22 @@ import codesages.mosaic.mosaicsListScreen;
 public class ReceiversHelper {
     static String TAG = "ReceiversHelper";
 
+    public static void enableInComingSMSReceiver(Context ctx, boolean enableIncomnig) {
+        Log.d(TAG, "enableInComingSMSReceiver: " + enableIncomnig);
+        int flagIn = (enableIncomnig ?
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED);
+
+        ComponentName inComponent = new ComponentName(ctx, IncomingSMSReceiver.class);
+
+        ctx.getPackageManager().setComponentEnabledSetting(
+                inComponent,
+                flagIn,
+                PackageManager.DONT_KILL_APP
+        );
+
+    }
+
     public static void enableInComingReceiver(Context ctx, boolean enableIncomnig) {
         Log.d(TAG, "enableInComingReceiver: " + enableIncomnig);
         int flagIn = (enableIncomnig ?
