@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,11 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,9 +26,9 @@ import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
 import codesages.mosaic.lists.MosaicAdapter;
+import codesages.mosaic.receiver.IncomingCallsReceiver;
 import codesages.mosaic.receiver.OutgoingCallsReceiver;
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardThumbnail;
+import codesages.mosaic.receiver.ReceiversHelper;
 import it.gmariotti.cardslib.library.recyclerview.internal.CardArrayRecyclerViewAdapter;
 
 public class mosaicsListScreen extends AppCompatActivity {
@@ -43,6 +39,7 @@ public class mosaicsListScreen extends AppCompatActivity {
     private ArrayList<Integer> mThumbIds;
     private ArrayList<Mosaic> mosaicArrayList = new ArrayList<>();
     CardArrayRecyclerViewAdapter mCardArrayAdapter;
+    Context ctx;
 
     @Override
     protected void onResume() {
@@ -67,6 +64,8 @@ public class mosaicsListScreen extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ctx = this;
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.createMosaicButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +76,7 @@ public class mosaicsListScreen extends AppCompatActivity {
             }
         });
 
-        checkOutgoingCallPermission();
+        checkCallsPermissions();
     }
 
     private void setList() {
@@ -112,23 +111,36 @@ public class mosaicsListScreen extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         if (requestCode == 101) {
+            //101 outgoing calls
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: Permission Granted");
-                enableOutgoingReceiver(true);
+                Log.d(TAG, "onRequestPermissionsResult: Permission Granted 101");
+                ReceiversHelper.enableOutgoingReceiver(ctx, true);
             } else {
-                showPermissionSweetAlert();
+                showPermissionSweetAlert(101);
+            }
+        } else if (requestCode == 102) {
+            //102 phone state
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "onRequestPermissionsResult: Permission Granted 102");
+                ReceiversHelper.enableInComingReceiver(ctx, true);
+            } else {
+                showPermissionSweetAlert(102);
             }
         }
     }
 
-    private void checkOutgoingCallPermission() {
+    private void checkCallsPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, 101);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 102);
+        }
     }
 
-    public void showPermissionSweetAlert() {
+    public void showPermissionSweetAlert(final int flag) {
         new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Hold On!")
                 .setContentText("We will not be able to monitor the calls!")
@@ -137,33 +149,23 @@ public class mosaicsListScreen extends AppCompatActivity {
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        enableOutgoingReceiver(false);
+                        if(flag == 101)
+                            ReceiversHelper.enableOutgoingReceiver(ctx,false);
+                        else if(flag == 102)
+                            ReceiversHelper.enableInComingReceiver(ctx,false);
                         sweetAlertDialog.dismiss();
                     }
                 })
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        checkOutgoingCallPermission();
+                        checkCallsPermissions();
                         sweetAlertDialog.dismiss();
                     }
                 })
                 .show();
     }
 
-    public void enableOutgoingReceiver(boolean enable) {
-        Log.d(TAG, "enableOutgoingReceiver: " + enable);
-        int flag = (enable ?
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED);
 
-        ComponentName component = new ComponentName(mosaicsListScreen.this, OutgoingCallsReceiver.class);
-
-        getPackageManager().setComponentEnabledSetting(
-                component,
-                flag,
-                PackageManager.DONT_KILL_APP
-        );
-    }
 }
 

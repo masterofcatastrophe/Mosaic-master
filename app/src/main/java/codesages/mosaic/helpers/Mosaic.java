@@ -84,7 +84,7 @@ public class Mosaic {
             this.contactIndex = contactIndex;
         }
 
-        public static FindMosaic findMosaic(ArrayList<Mosaic> mosaics, String outGoingNumber) {
+        public static FindMosaic findMosaic(ArrayList<Mosaic> mosaics, String numberToFind) {
             Log.d(TAG, "findMosaic: ");
             for (int i = 0; i < mosaics.size(); i++) {
                 Mosaic mosaic = mosaics.get(i);
@@ -96,20 +96,20 @@ public class Mosaic {
                     for (int k = 0; k < contactNumber.size(); k++) {
                         Log.d(TAG, "findMosaic: Numbers: " + contactNumber.get(k));
                         if (contactNumber.get(k).replaceAll("\\s+", "")
-                                .contains(outGoingNumber.replaceAll("\\s+", ""))
-                                || outGoingNumber.replaceAll("\\s+", "")
+                                .contains(numberToFind.replaceAll("\\s+", ""))
+                                || numberToFind.replaceAll("\\s+", "")
                                 .contains(contactNumber.get(k).replaceAll("\\s+", ""))) {
-                            Log.d(TAG, "findMosaic: MATCH-> " + contactNumber.get(k) + " AND " + (outGoingNumber));
+                            Log.d(TAG, "findMosaic: MATCH-> " + contactNumber.get(k) + " AND " + (numberToFind));
                             return new FindMosaic(i, j);
                         }
                     }
                     for (int k = 0; k < contactEmails.size(); k++) {
                         Log.d(TAG, "findMosaic: Numbers: " + contactEmails.get(k));
                         if (contactEmails.get(k).replaceAll("\\s+", "")
-                                .contains(outGoingNumber.replaceAll("\\s+", ""))
-                                || outGoingNumber.replaceAll("\\s+", "")
+                                .contains(numberToFind.replaceAll("\\s+", ""))
+                                || numberToFind.replaceAll("\\s+", "")
                                 .contains(contactEmails.get(k).replaceAll("\\s+", ""))) {
-                            Log.d(TAG, "findMosaic: MATCH-> " + contactEmails.get(k) + " AND " + (outGoingNumber));
+                            Log.d(TAG, "findMosaic: MATCH-> " + contactEmails.get(k) + " AND " + (numberToFind));
                             return new FindMosaic(i, j);
                         }
                     }
