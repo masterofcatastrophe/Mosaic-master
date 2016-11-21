@@ -81,7 +81,7 @@ public class mosaicsListScreen extends AppCompatActivity {
         checkCallsPermissions();
 
         //if (!CacheManager.getOugoingSMSObserverFlag(ctx)) {
-            startougoingSMSObserver();
+        startougoingSMSObserver();
         //}
     }
 
@@ -116,44 +116,48 @@ public class mosaicsListScreen extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
+
         if (requestCode == 101) {
             //101 outgoing calls
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: Permission Granted 101");
-                ReceiversHelper.enableOutgoingReceiver(ctx, true);
-            } else {
-                showPermissionSweetAlert(101);
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "onRequestPermissionsResult: Permission Granted 101");
+                    ReceiversHelper.enableOutgoingReceiver(ctx, true);
+                    checkCallsPermissions();
+                } else {
+                    showPermissionSweetAlert(101);
+                }
             }
-        } else if (requestCode == 102) {
-            //102 phone state
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: Permission Granted 102");
-                ReceiversHelper.enableInComingReceiver(ctx, true);
-            } else {
-                showPermissionSweetAlert(102);
-            }
+
         } else if (requestCode == 103) {
             //103 READ SMS
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: Permission Granted 103/4");
-                ReceiversHelper.enableInComingSMSReceiver(ctx, true);
-            } else {
-                showPermissionSweetAlert(103);
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "onRequestPermissionsResult: Permission Granted 103/4");
+                    ReceiversHelper.enableInComingSMSReceiver(ctx, true);
+                    checkCallsPermissions();
+                } else {
+                    showPermissionSweetAlert(103);
+                }
             }
         }
     }
 
     private void checkCallsPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.PROCESS_OUTGOING_CALLS}, 101);
-            }
-            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 102);
+            if (checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) != PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{
+                                Manifest.permission.PROCESS_OUTGOING_CALLS,
+                                Manifest.permission.READ_PHONE_STATE}
+                        , 101);
             }
             if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
                     || checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS}, 103);
+                requestPermissions(new String[]{
+                                Manifest.permission.READ_SMS,
+                                Manifest.permission.RECEIVE_SMS},
+                        103);
             }
 
         }
@@ -180,8 +184,8 @@ public class mosaicsListScreen extends AppCompatActivity {
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        checkCallsPermissions();
                         sweetAlertDialog.dismiss();
+                        checkCallsPermissions();
                     }
                 })
                 .show();
