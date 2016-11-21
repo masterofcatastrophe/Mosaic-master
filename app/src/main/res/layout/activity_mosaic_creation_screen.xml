@@ -37,6 +37,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="Mosaic Name"
+        android:inputType="text"
+        android:maxLines="1"
         android:padding="15dp" />
 
     <Button
