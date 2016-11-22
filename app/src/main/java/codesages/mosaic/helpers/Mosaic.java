@@ -95,10 +95,10 @@ public class Mosaic {
                     ArrayList<String> contactEmails = mosaic.getContacts().get(j).getContactNumbers().getEmails();
                     for (int k = 0; k < contactNumber.size(); k++) {
                         //Log.d(TAG, "findMosaic: Numbers: " + contactNumber.get(k));
-                        if (contactNumber.get(k).replaceAll("\\s+", "")
-                                .contains(numberToFind.replaceAll("\\s+", ""))
-                                || numberToFind.replaceAll("\\s+", "")
-                                .contains(contactNumber.get(k).replaceAll("\\s+", ""))) {
+                        if (contactNumber.get(k).replaceAll("[- ]+", "")
+                                .contains(numberToFind.replaceAll("[- ]+", ""))
+                                || numberToFind.replaceAll("[- ]+", "")
+                                .contains(contactNumber.get(k).replaceAll("[- ]+", ""))) {
                             Log.d(TAG, "findMosaic: MATCH-> " + contactNumber.get(k) + " AND " + (numberToFind));
                             return new FindMosaic(i, j);
                         }
