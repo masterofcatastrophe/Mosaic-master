@@ -129,8 +129,8 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM yyyy hh:mm");
         if (conatcts.get(position).getLastCall() == null) {
             //to convert Date to String, use format method of SimpleDateFormat class.
-            String strDate = dateFormat.format(new Date());
-            viewHolder.period.setText(String.format("Last Contacted on: %s", strDate));
+            //String strDate = dateFormat.format(new Date());
+            viewHolder.period.setText(String.format("Last Contacted on: %s", "Unknown"));
         } else {
             String strDate = dateFormat.format(conatcts.get(position).getLastCall());
             viewHolder.period.setText(String.format("Last Contacted on: %s", strDate));
