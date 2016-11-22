@@ -99,7 +99,7 @@ public class Mosaic {
                                 .contains(numberToFind.replaceAll("\\s+", ""))
                                 || numberToFind.replaceAll("\\s+", "")
                                 .contains(contactNumber.get(k).replaceAll("\\s+", ""))) {
-                            //Log.d(TAG, "findMosaic: MATCH-> " + contactNumber.get(k) + " AND " + (numberToFind));
+                            Log.d(TAG, "findMosaic: MATCH-> " + contactNumber.get(k) + " AND " + (numberToFind));
                             return new FindMosaic(i, j);
                         }
                     }
@@ -109,7 +109,7 @@ public class Mosaic {
                                 .contains(numberToFind.replaceAll("\\s+", ""))
                                 || numberToFind.replaceAll("\\s+", "")
                                 .contains(contactEmails.get(k).replaceAll("\\s+", ""))) {
-                            //Log.d(TAG, "findMosaic: MATCH-> " + contactEmails.get(k) + " AND " + (numberToFind));
+                            Log.d(TAG, "findMosaic: MATCH-> " + contactEmails.get(k) + " AND " + (numberToFind));
                             return new FindMosaic(i, j);
                         }
                     }
@@ -119,7 +119,7 @@ public class Mosaic {
         }
 
         public static FindMosaic findMosaicbyContactName(ArrayList<Mosaic> mosaics, String contactName) {
-            Log.d(TAG, "findMosaic: ");
+            Log.d(TAG, "findMosaicbyContactName: ");
             for (int i = 0; i < mosaics.size(); i++) {
                 Mosaic mosaic = mosaics.get(i);
                 ArrayList<MosaicContact> mosaicConntacts = mosaic.getContacts();
@@ -127,6 +127,7 @@ public class Mosaic {
                     //Log.d(TAG, "findMosaic: Contact: " + mosaicConntacts.get(j).getName());
                     if (mosaicConntacts.get(j).getName().contains(contactName)
                             || contactName.contains(mosaicConntacts.get(j).getName())) {
+                        Log.d(TAG, "findMosaicbyContactName: MATCH FOUND " + mosaicConntacts.get(j).getName() + " AND " + contactName);
                         return new FindMosaic(i, j);
                     }
                 }
