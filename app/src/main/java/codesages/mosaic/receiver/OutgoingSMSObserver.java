@@ -58,28 +58,31 @@ public class OutgoingSMSObserver extends ContentObserver {
 
     public boolean processNumber(Date date, String number) {
         ArrayList<Mosaic> mosaics = CacheManager.getMosaicFromCache(context);
-        Mosaic.FindMosaic findMosaic = findMosaicbyContactName(mosaics, number);
-
-        if (findMosaic != null) {
-            MosaicContact mContact = mosaics.get(findMosaic.mosaicIndex).getContacts().get(findMosaic.contactIndex);
-            if (mContact.getLastCall().compareTo(date) < 0) {
-                CacheManager.updateMosaicContact(context,
-                        findMosaic.mosaicIndex,
-                        findMosaic.contactIndex,
-                        date);
-                return true;
+        ArrayList<Mosaic.FindMosaic> list1 = findMosaicbyContactName(mosaics, number);
+        for (Mosaic.FindMosaic findMosaic : list1) {
+            if (findMosaic != null) {
+                MosaicContact mContact = mosaics.get(findMosaic.mosaicIndex).getContacts().get(findMosaic.contactIndex);
+                if (mContact.getLastCall().compareTo(date) < 0) {
+                    CacheManager.updateMosaicContact(context,
+                            findMosaic.mosaicIndex,
+                            findMosaic.contactIndex,
+                            date);
+                    return true;
+                }
             }
         }
 
-        findMosaic = findMosaic(mosaics, number);
-        if (findMosaic != null) {
-            MosaicContact mContact = mosaics.get(findMosaic.mosaicIndex).getContacts().get(findMosaic.contactIndex);
-            if (mContact.getLastCall().compareTo(date) < 0) {
-                CacheManager.updateMosaicContact(context,
-                        findMosaic.mosaicIndex,
-                        findMosaic.contactIndex,
-                        date);
-                return true;
+        ArrayList<Mosaic.FindMosaic> list2 = findMosaic(mosaics, number);
+        for (Mosaic.FindMosaic findMosaic : list2) {
+            if (findMosaic != null) {
+                MosaicContact mContact = mosaics.get(findMosaic.mosaicIndex).getContacts().get(findMosaic.contactIndex);
+                if (mContact.getLastCall().compareTo(date) < 0) {
+                    CacheManager.updateMosaicContact(context,
+                            findMosaic.mosaicIndex,
+                            findMosaic.contactIndex,
+                            date);
+                    return true;
+                }
             }
         }
         return false;

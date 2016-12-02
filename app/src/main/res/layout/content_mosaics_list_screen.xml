@@ -18,6 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="14dp"
+        android:descendantFocusability="blocksDescendants"
         android:divider="@null" />
     <!--<it.gmariotti.cardslib.library.recyclerview.view.CardRecyclerView
         android:id="@+id/carddemo_recyclerview"

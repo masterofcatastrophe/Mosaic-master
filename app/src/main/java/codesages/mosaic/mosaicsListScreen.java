@@ -46,18 +46,8 @@ public class mosaicsListScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mosaicArrayList = CacheManager.getMosaicFromCache(getApplicationContext());
-        if (!(mosaicArrayList.size() > 0)) {
-            new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
-                    .setTitleText("Mosaic")
-                    .setContentText("No Mosaics yet, Press the \"+\" button below to Add some")
-                    .show();
-        }
-
-
-        setList();
+        setMosaicList();
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +55,8 @@ public class mosaicsListScreen extends AppCompatActivity {
         setContentView(R.layout.activity_mosaics_list_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //setMosaicList();
 
         ctx = this;
 
@@ -83,6 +75,19 @@ public class mosaicsListScreen extends AppCompatActivity {
         //if (!CacheManager.getOugoingSMSObserverFlag(ctx)) {
         startougoingSMSObserver();
         //}
+    }
+
+    private void setMosaicList() {
+        mosaicArrayList = CacheManager.getMosaicFromCache(getApplicationContext());
+        setList();
+
+        if (!(mosaicArrayList.size() > 0)) {
+            new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Mosaic")
+                    .setContentText("No Mosaics yet, Press the \"+\" button below to Add some")
+                    .show();
+        }
+
     }
 
     private void setList() {
@@ -141,6 +146,7 @@ public class mosaicsListScreen extends AppCompatActivity {
                 }
             }
         }
+
     }
 
     private void checkCallsPermissions() {

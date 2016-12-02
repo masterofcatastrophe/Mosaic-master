@@ -19,15 +19,16 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="Family"
+        android:textAllCaps="true"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ListView
         android:id="@+id/mosaic_contact_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/editMosaicButton"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/contact_screen_mosaic_name_tv"
+        android:divider="@null"
         android:fastScrollEnabled="true"></ListView>
 
 </RelativeLayout>

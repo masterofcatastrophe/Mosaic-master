@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import codesages.mosaic.R;
 import codesages.mosaic.helpers.Contact;
@@ -124,16 +125,29 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
         for (int i = 0; i < contactNumbers.getNumbersEmail().size(); i++) {
             strContact += contactNumbers.getNumbersEmail().get(i) + ", ";
         }
-        viewHolder.contact.setText(strContact);
+        viewHolder.contact.setText("Contact Every "
+                + conatcts.get(position).getFrequencyInDays()
+                + " Day(s)");
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM yyyy hh:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yy h:mm a");
         if (conatcts.get(position).getLastCall() == null) {
             //to convert Date to String, use format method of SimpleDateFormat class.
             //String strDate = dateFormat.format(new Date());
             viewHolder.period.setText(String.format("Last Contacted on: %s", "Unknown"));
+            convertView.findViewById(R.id.inner_ll).setBackgroundResource(R.drawable.sadface_tile);
         } else {
             String strDate = dateFormat.format(conatcts.get(position).getLastCall());
             viewHolder.period.setText(String.format("Last Contacted on: %s", strDate));
+            long daysDiff = TimeUnit
+                    .DAYS
+                    .convert(new Date().getTime()
+                                    - conatcts.get(position).getLastCall().getTime(),
+                            TimeUnit.MILLISECONDS);
+            if (daysDiff > conatcts.get(position).getFrequencyInDays()) {
+                convertView.findViewById(R.id.inner_ll).setBackgroundResource(R.drawable.sadface_tile);
+            }
+
+
         }
         String[] initials = conatcts.get(position).getName().split(" ");
         String init = "M";
@@ -153,13 +167,7 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
 
 
         viewHolder.img.setImageDrawable(drawable);
-        if (position % 2 == 0) {
-            //viewHolder.img.setBackgroundResource(R.drawable.crack);
-            convertView.setBackgroundColor(Color.LTGRAY);
-        } else {
-            //viewHolder.img.setBackgroundResource(R.drawable.purple_flower_fresh);
-            convertView.setBackgroundColor(Color.TRANSPARENT);
-        }
+
         return convertView;
     }
 

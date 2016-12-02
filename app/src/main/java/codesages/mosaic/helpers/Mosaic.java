@@ -84,7 +84,8 @@ public class Mosaic {
             this.contactIndex = contactIndex;
         }
 
-        public static FindMosaic findMosaic(ArrayList<Mosaic> mosaics, String numberToFind) {
+        public static ArrayList<FindMosaic> findMosaic(ArrayList<Mosaic> mosaics, String numberToFind) {
+            ArrayList<FindMosaic> list = new ArrayList<>();
             Log.d(TAG, "findMosaic: ");
             for (int i = 0; i < mosaics.size(); i++) {
                 Mosaic mosaic = mosaics.get(i);
@@ -100,7 +101,7 @@ public class Mosaic {
                                 || numberToFind.replaceAll("[( ) -]+", "")
                                 .contains(contactNumber.get(k).replaceAll("[( ) -]+", ""))) {
                             Log.d(TAG, "findMosaic: MATCH-> " + contactNumber.get(k) + " AND " + (numberToFind));
-                            return new FindMosaic(i, j);
+                            list.add(new FindMosaic(i, j));
                         }
                     }
                     for (int k = 0; k < contactEmails.size(); k++) {
@@ -110,16 +111,17 @@ public class Mosaic {
                                 || numberToFind.replaceAll("\\s+", "")
                                 .contains(contactEmails.get(k).replaceAll("\\s+", ""))) {
                             Log.d(TAG, "findMosaic: MATCH-> " + contactEmails.get(k) + " AND " + (numberToFind));
-                            return new FindMosaic(i, j);
+                            list.add(new FindMosaic(i, j));
                         }
                     }
                 }
             }
-            return null;
+            return list;
         }
 
-        public static FindMosaic findMosaicbyContactName(ArrayList<Mosaic> mosaics, String contactName) {
+        public static ArrayList<FindMosaic> findMosaicbyContactName(ArrayList<Mosaic> mosaics, String contactName) {
             Log.d(TAG, "findMosaicbyContactName: ");
+            ArrayList<FindMosaic> list = new ArrayList<>();
             for (int i = 0; i < mosaics.size(); i++) {
                 Mosaic mosaic = mosaics.get(i);
                 ArrayList<MosaicContact> mosaicConntacts = mosaic.getContacts();
@@ -128,11 +130,11 @@ public class Mosaic {
                     if (mosaicConntacts.get(j).getName().contains(contactName)
                             || contactName.contains(mosaicConntacts.get(j).getName())) {
                         Log.d(TAG, "findMosaicbyContactName: MATCH FOUND " + mosaicConntacts.get(j).getName() + " AND " + contactName);
-                        return new FindMosaic(i, j);
+                        list.add(new FindMosaic(i, j));
                     }
                 }
             }
-            return null;
+            return list;
         }
     }
 }

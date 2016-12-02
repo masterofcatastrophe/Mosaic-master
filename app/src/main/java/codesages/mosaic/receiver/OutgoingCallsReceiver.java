@@ -31,12 +31,14 @@ public class OutgoingCallsReceiver extends BroadcastReceiver {
     public void processNumber(Context ctx, String number) {
         Log.d("OutgoingCallsReceiver", "processNumber: ");
         ArrayList<Mosaic> mosaics = CacheManager.getMosaicFromCache(ctx);
-        Mosaic.FindMosaic findMosaic = findMosaic(mosaics, number);
-        if (findMosaic != null) {
-            CacheManager.updateMosaicContact(ctx,
-                    findMosaic.mosaicIndex,
-                    findMosaic.contactIndex,
-                    new Date());
+        ArrayList<Mosaic.FindMosaic> list = findMosaic(mosaics, number);
+        for (Mosaic.FindMosaic findMosaic : list) {
+            if (findMosaic != null) {
+                CacheManager.updateMosaicContact(ctx,
+                        findMosaic.mosaicIndex,
+                        findMosaic.contactIndex,
+                        new Date());
+            }
         }
     }
 

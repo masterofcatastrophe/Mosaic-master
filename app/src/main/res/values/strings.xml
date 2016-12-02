@@ -8,4 +8,8 @@
     <string name="title_activity_contact_detail_screen">Ashley</string>
     <string name="create_a_mosaic_or_pick_from_the_mosaics_created">Create a Mosaic or Pick from the Mosaics created!</string>
     <string name="holdMosaictoDeleteLabel">Hold the Mosaic you wish to delete!</string>
+    <array name="mosaic_list_dropdown">
+        <item name="mosaic_list_dropdown_edit">Edit</item>
+        <item name="mosaic_list_dropdown_delete">Delete</item>
+    </array>
 </resources>
