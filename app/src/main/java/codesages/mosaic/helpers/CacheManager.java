@@ -148,6 +148,19 @@ public class CacheManager {
         return false;
     }
 
+    public static boolean updateMosaicContact(Context ctx, int mosaicIndex, int contactIndex, int frequence) {
+        Log.d(TAG, "updateMosaicContact: M.index: " + mosaicIndex + " C.index: " + contactIndex);
+        ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);
+        if (mosaics.size() > mosaicIndex) {
+            if (mosaics.get(mosaicIndex).getContacts().size() > contactIndex) {
+                mosaics.get(mosaicIndex).getContacts().get(contactIndex).setFrequencyInDays(frequence);
+                updateMosaicByPosition(ctx, mosaics.get(mosaicIndex), mosaicIndex);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean deleteMosaicContact(Context ctx, int mosaicIndex, int contactIndex) {
         Log.d(TAG, "deleteMosaicContact: M.index: " + mosaicIndex + " C.index: " + contactIndex);
         ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);

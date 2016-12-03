@@ -45,10 +45,13 @@ public class contactDetailScreen extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: New" + newFrequency + " old: " + contact.getFrequencyInDays());
-        if (contact.getFrequencyInDays() != newFrequency)
-            Toast.makeText(ctx, "Freqency Changed", Toast.LENGTH_SHORT).show();
-        else
+        if (contact.getFrequencyInDays() != newFrequency) {
+            //Toast.makeText(ctx, "Freqency Changed", Toast.LENGTH_SHORT).show();
+            CacheManager.updateMosaicContact(ctx, mosaicIndex, contactIndex, newFrequency);
+        }
+        /*else
             Toast.makeText(ctx, "Frequency is still the Same", Toast.LENGTH_SHORT).show();
+            */
     }
 
     @Override

@@ -2,7 +2,7 @@
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
     android:src="@drawable/rsz_1sadface"
     android:tileMode="mirror"
-    android:tint="#d3d3d3"
+    android:tint="#d6d6d6"
     android:tintMode="screen">
 
 </bitmap>
