@@ -32,6 +32,11 @@ public class Mosaic {
         CreatedOn = createdOn;
         this.imagePath = imagePath;
     }
+    public Mosaic(String name, Date createdOn) {
+        Name = name;
+        CreatedOn = createdOn;
+        this.imagePath = null;
+    }
 
     public ArrayList<MosaicContact> getContacts() {
         return contacts;

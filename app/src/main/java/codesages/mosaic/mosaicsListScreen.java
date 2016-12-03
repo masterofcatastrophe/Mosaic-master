@@ -42,6 +42,7 @@ public class mosaicsListScreen extends AppCompatActivity {
     static final String TAG = "MosiacListScreen";
     private ArrayList<Mosaic> mosaicArrayList = new ArrayList<>();
     Context ctx;
+    static boolean isAlertShown = false;
 
     @Override
     protected void onResume() {
@@ -81,7 +82,8 @@ public class mosaicsListScreen extends AppCompatActivity {
         mosaicArrayList = CacheManager.getMosaicFromCache(getApplicationContext());
         setList();
 
-        if (!(mosaicArrayList.size() > 0)) {
+        if (!(mosaicArrayList.size() > 0) && !isAlertShown) {
+            isAlertShown = true;
             new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
                     .setTitleText("Mosaic")
                     .setContentText("No Mosaics yet, Press the \"+\" button below to Add some")

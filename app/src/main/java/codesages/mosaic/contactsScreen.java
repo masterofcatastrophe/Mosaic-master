@@ -37,11 +37,13 @@ public class contactsScreen extends AppCompatActivity {
         if (mosaic != null) {
             if (mosaic.getContacts().size() > 0)
                 setlist();
-            else
+            else {
                 new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
                         .setTitleText(mosaic.getName())
                         .setContentText("No contacts were added under this Mosaic, Press the \"+\" button below to Add some")
                         .show();
+                setlist();
+            }
         }
     }
 
@@ -56,6 +58,7 @@ public class contactsScreen extends AppCompatActivity {
         getMosaic();
         if (mosaic != null) {
             setViews();
+            getSupportActionBar().setTitle(mosaic.getName().toUpperCase());
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addContactsID);

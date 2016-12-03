@@ -118,22 +118,32 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
         }
 
         viewHolder.txt.setText(mosaics.get(position).getName());
-        if (mosaics.get(position).getImagePath().isImageFromGoogleDrive()) {
-            Log.d(TAG, "getView: get Image from Google with " + mosaics.get(position).getImagePath().getStringUri());
-            Picasso.with(mContext)
-                    .load(Uri.parse(mosaics.get(position).getImagePath().getStringUri()))
-                    //.placeholder(R.drawable.progress_animation)
-                    .error(android.R.drawable.ic_menu_report_image)
-                    .into(viewHolder.img);
+        if (mosaics.get(position).getImagePath() != null) {
+            if (mosaics.get(position).getImagePath().isImageFromGoogleDrive()) {
+                Log.d(TAG, "getView: get Image from Google with " + mosaics.get(position).getImagePath().getStringUri());
+                Picasso.with(mContext)
+                        .load(Uri.parse(mosaics.get(position).getImagePath().getStringUri()))
+                        //.placeholder(R.drawable.progress_animation)
+                        .error(android.R.drawable.ic_menu_report_image)
+                        .into(viewHolder.img);
 
+            } else {
+
+                Picasso.with(mContext)
+                        .load(new File(mosaics.get(position).getImagePath().getPath()))
+                        //.placeholder(R.drawable.progress_animation)
+                        .error(android.R.drawable.ic_menu_report_image)
+                        .resize(0, 500)
+                        .into(viewHolder.img);
+            }
         } else {
-
             Picasso.with(mContext)
-                    .load(new File(mosaics.get(position).getImagePath().getPath()))
+                    .load(R.drawable.file_image)
                     //.placeholder(R.drawable.progress_animation)
-                    .error(android.R.drawable.ic_menu_report_image)
+                    .error(R.drawable.file_image)
                     .resize(0, 500)
                     .into(viewHolder.img);
+            viewHolder.img.setScaleType(ImageView.ScaleType.CENTER);
         }
         viewHolder.btn.setFocusable(false);
         viewHolder.btn.setFocusableInTouchMode(false);

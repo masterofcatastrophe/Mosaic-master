@@ -60,15 +60,16 @@ public class contactDetailScreen extends AppCompatActivity {
         setContentView(R.layout.activity_contact_detail_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         ctx = this;
 
         getContact();
 
         if (contact == null) {
-            Toast.makeText(ctx, "Error in Opening The Oontact", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "Error in Opening The Contact", Toast.LENGTH_SHORT).show();
             finish();
         }
-
+        getSupportActionBar().setTitle(contact.getName().toUpperCase());
         setViews();
     }
 

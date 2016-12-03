@@ -71,33 +71,40 @@ public class MosaicCreationScreen extends AppCompatActivity {
                     .addText(" Update Mosaic")
                     .build());
             mosaicNameEt.setText(mosaic.getName());
+            if (mosaic.getImagePath() != null) {
+                if (mosaic.getImagePath().isImageFromGoogleDrive()) {
+                    Log.d(TAG, "getView: get Image from Google with " + mosaic.getImagePath().getStringUri());
+                    Picasso.with(ctx)
+                            .load(Uri.parse(mosaic.getImagePath().getStringUri()))
+                            .error(android.R.drawable.ic_menu_report_image)
+                            .into(img);
 
-            if (mosaic.getImagePath().isImageFromGoogleDrive()) {
-                Log.d(TAG, "getView: get Image from Google with " + mosaic.getImagePath().getStringUri());
-                Picasso.with(ctx)
-                        .load(Uri.parse(mosaic.getImagePath().getStringUri()))
-                        .error(android.R.drawable.ic_menu_report_image)
-                        .into(img);
+                } else {
 
-            } else {
-
-                Picasso.with(ctx)
-                        .load(new File(mosaic.getImagePath().getPath()))
-                        .error(android.R.drawable.ic_menu_report_image)
-                        .into(img);
+                    Picasso.with(ctx)
+                            .load(new File(mosaic.getImagePath().getPath()))
+                            .error(android.R.drawable.ic_menu_report_image)
+                            .into(img);
+                }
             }
-            isImageSet = true;
+            //isImageSet = true;
 
         }
         saveNewMosaicButton.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (!mosaicNameEt.getText().toString().isEmpty() && isImageSet) {
+                if (!mosaicNameEt.getText().toString().isEmpty()) {
                     addTask = new AddMosaic();
                     if (!isUpdateMode) {
-                        Mosaic mosaic = new Mosaic(mosaicNameEt.getText().toString(), new Date(), imagePath);
-                        addTask.execute(mosaic);
+                        if (isImageSet) {
+                            Mosaic mosaic = new Mosaic(mosaicNameEt.getText().toString(), new Date(), imagePath);
+                            addTask.execute(mosaic);
+                        } else {
+                            Mosaic mosaic = new Mosaic(mosaicNameEt.getText().toString(), new Date());
+                            addTask.execute(mosaic);
+                        }
+
                     } else {
 
                         mosaic.setName(mosaicNameEt.getText().toString());
@@ -108,7 +115,7 @@ public class MosaicCreationScreen extends AppCompatActivity {
                 } else {
                     new SweetAlertDialog(ctx, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Hold On...")
-                            .setContentText("Enter a Name First and Select a Photo")
+                            .setContentText("Enter a Name First")
                             .setConfirmText("Ok")
                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
