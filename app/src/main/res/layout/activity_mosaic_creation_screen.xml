@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,25 +14,36 @@
         android:layout_width="match_parent"
         android:layout_height="250dp">
 
+
+        <com.beardedhen.androidbootstrap.AwesomeTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="70dp"
+            app:bootstrapBrand="regular"
+            app:bootstrapText="{fa_file_image_o}" />
+
         <ImageView
             android:id="@+id/mosaic_creation_imageview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_blue_bright"
             android:scaleType="centerCrop" />
+
 
     </FrameLayout>
 
-    <Button
+    <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/uploadMosaicImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:clickable="true"
-        android:enabled="true"
-        android:text="Select Mosaic Image" />
+        android:layout_margin="20dp"
+        app:bootstrapBrand="primary"
+        app:bootstrapSize="lg"
+        app:bootstrapText="{fa_folder_open} Select Mosaic Image"
+        app:roundedCorners="true" />
 
-    <EditText
+
+    <com.beardedhen.androidbootstrap.BootstrapEditText
         android:id="@+id/mosaic_creation_mosaic_name_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,14 +51,18 @@
         android:hint="Mosaic Name"
         android:inputType="text"
         android:maxLines="1"
-        android:padding="15dp" />
+        app:bootstrapBrand="primary"
+        app:bootstrapSize="xl" />
 
-    <Button
+    <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/saveNewMosaicButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Save Mosaic" />
+        android:layout_margin="20dp"
+        app:bootstrapBrand="primary"
+        app:bootstrapSize="lg"
+        app:bootstrapText="{fa_save} Save Mosaic"
+        app:roundedCorners="true" />
 
 
 </LinearLayout>

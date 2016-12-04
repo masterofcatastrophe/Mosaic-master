@@ -64,23 +64,25 @@ public class IncomingSMSReceiver extends BroadcastReceiver {
     }
 
     public void processNumber(String contactName) {
-        // try finding contact with the name, then with numbers
         Log.d(TAG, "processNumber: ");
         ArrayList<Mosaic> mosaics = CacheManager.getMosaicFromCache(ctx);
-        Mosaic.FindMosaic findMosaic = findMosaicbyContactName(mosaics, contactName);
-        if (findMosaic != null) {
-            CacheManager.updateMosaicContact(ctx,
-                    findMosaic.mosaicIndex,
-                    findMosaic.contactIndex,
-                    new Date());
+        ArrayList<Mosaic.FindMosaic> list1 = findMosaicbyContactName(mosaics, contactName);
+        for (Mosaic.FindMosaic findMosaic : list1) {
+            if (findMosaic != null) {
+                CacheManager.updateMosaicContact(ctx,
+                        findMosaic.mosaicIndex,
+                        findMosaic.contactIndex,
+                        new Date());
+            }
         }
-        findMosaic = findMosaic(mosaics, contactName);
-        if (findMosaic != null) {
-            CacheManager.updateMosaicContact(ctx,
-                    findMosaic.mosaicIndex,
-                    findMosaic.contactIndex,
-                    new Date());
+        ArrayList<Mosaic.FindMosaic> list2 = findMosaic(mosaics, contactName);
+        for (Mosaic.FindMosaic findMosaic : list2) {
+            if (findMosaic != null) {
+                CacheManager.updateMosaicContact(ctx,
+                        findMosaic.mosaicIndex,
+                        findMosaic.contactIndex,
+                        new Date());
+            }
         }
-
     }
 }

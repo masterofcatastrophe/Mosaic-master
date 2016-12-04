@@ -74,13 +74,16 @@ public class IncomingCallsReceiver extends BroadcastReceiver {
     public void processNumber(String number) {
         Log.d(TAG, "processNumber: ");
         ArrayList<Mosaic> mosaics = CacheManager.getMosaicFromCache(ctx);
-        Mosaic.FindMosaic findMosaic = findMosaic(mosaics, number);
-        if (findMosaic != null) {
-            CacheManager.updateMosaicContact(ctx,
-                    findMosaic.mosaicIndex,
-                    findMosaic.contactIndex,
-                    new Date());
+        ArrayList<Mosaic.FindMosaic> list = findMosaic(mosaics, number);
+        for (Mosaic.FindMosaic findMosaic : list) {
+            if (findMosaic != null) {
+                CacheManager.updateMosaicContact(ctx,
+                        findMosaic.mosaicIndex,
+                        findMosaic.contactIndex,
+                        new Date());
+            }
         }
+
     }
 }
 

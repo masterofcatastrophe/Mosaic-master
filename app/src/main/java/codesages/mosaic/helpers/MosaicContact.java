@@ -10,11 +10,13 @@ public class MosaicContact {
     String Name;
     Date LastCall;
     String Frequency;
+    int FrequencyInDays;
     ContactNumbers contactNumbers;
 
     public MosaicContact(String name, ContactNumbers contactnumbers) {
         Name = name;
         contactNumbers = contactnumbers;
+        this.FrequencyInDays = 2;
     }
 
     public String getName() {
@@ -47,5 +49,13 @@ public class MosaicContact {
 
     public void setContactNumbers(ContactNumbers contactNumbers) {
         this.contactNumbers = contactNumbers;
+    }
+
+    public int getFrequencyInDays() {
+        return FrequencyInDays;
+    }
+
+    public void setFrequencyInDays(int frequencyInDays) {
+        FrequencyInDays = frequencyInDays;
     }
 }

@@ -1,18 +1,24 @@
 package codesages.mosaic.lists;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapDropDown;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -24,8 +30,13 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Set;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import codesages.mosaic.MosaicCreationScreen;
 import codesages.mosaic.R;
+import codesages.mosaic.contactsScreen;
+import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.ImageManager;
+import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
 
 /**
@@ -90,7 +101,7 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
 
         if (convertView == null) {
@@ -98,6 +109,7 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
             viewHolder = new ViewHolder();
             viewHolder.img = (ImageView) convertView.findViewById(R.id.mosaic_list_row_img);
             viewHolder.txt = (TextView) convertView.findViewById(R.id.mosaic_list_row_txt);
+            viewHolder.btn = (ImageButton) convertView.findViewById(R.id.mosaic_list_row_imgbtn);
 
             convertView.setTag(viewHolder);
         } else {
@@ -106,27 +118,64 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
         }
 
         viewHolder.txt.setText(mosaics.get(position).getName());
+        if (mosaics.get(position).getImagePath() != null) {
+            if (mosaics.get(position).getImagePath().isImageFromGoogleDrive()) {
+                Log.d(TAG, "getView: get Image from Google with " + mosaics.get(position).getImagePath().getStringUri());
+                Picasso.with(mContext)
+                        .load(Uri.parse(mosaics.get(position).getImagePath().getStringUri()))
+                        //.placeholder(R.drawable.progress_animation)
+                        .error(android.R.drawable.ic_menu_report_image)
+                        .into(viewHolder.img);
 
-        if (mosaics.get(position).getImagePath().isImageFromGoogleDrive()) {
-            Log.d(TAG, "getView: get Image from Google with " + mosaics.get(position).getImagePath().getStringUri());
-            Picasso.with(mContext)
-                    .load(Uri.parse(mosaics.get(position).getImagePath().getStringUri()))
-                    //.placeholder(R.drawable.progress_animation)
-                    .error(android.R.drawable.ic_menu_report_image)
-                    .into(viewHolder.img);
+            } else {
 
+                Picasso.with(mContext)
+                        .load(new File(mosaics.get(position).getImagePath().getPath()))
+                        //.placeholder(R.drawable.progress_animation)
+                        .error(android.R.drawable.ic_menu_report_image)
+                        .resize(0, 500)
+                        .into(viewHolder.img);
+            }
         } else {
-
             Picasso.with(mContext)
-                    .load(new File(mosaics.get(position).getImagePath().getPath()))
+                    .load(R.drawable.file_image)
                     //.placeholder(R.drawable.progress_animation)
-                    .error(android.R.drawable.ic_menu_report_image)
+                    .error(R.drawable.file_image)
                     .resize(0, 500)
                     .into(viewHolder.img);
+            viewHolder.img.setScaleType(ImageView.ScaleType.CENTER);
         }
+        viewHolder.btn.setFocusable(false);
+        viewHolder.btn.setFocusableInTouchMode(false);
+        viewHolder.btn.setClickable(true);
+
+        viewHolder.btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setItems(new CharSequence[]{"Edit", "Delete"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (which == 0) {
+                            Toast.makeText(mContext, "Edit", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(mContext, MosaicCreationScreen.class);
+                            intent.putExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, position);
+                            intent.putExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_IS_EDIT, true);
+                            mContext.startActivity(intent);
+                        } else {
+                            createAlertSweetAlert(position);
+                        }
+
+                    }
+                });
+                builder.show();
+            }
+        });
 
         return convertView;
     }
+
 
     @Override
     public Object[] getSections() {
@@ -153,6 +202,42 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
     public class ViewHolder {
         public ImageView img;
         public TextView txt;
+        public ImageButton btn;
+    }
+
+    public void createAlertSweetAlert(final int position) {
+        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Hold The Phone!")
+                .setContentText("Do You Really Want to Delete This Mosaic?")
+                .setCancelText("No")
+                .setConfirmText("Yes")
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismiss();
+                        if (CacheManager.deleteMosaicByPosition(mContext, position)) {
+                            createSucessSweetAlert();
+                            mosaics.remove(position);
+                            notifyDataSetChanged();
+                        } else
+                            Toast.makeText(mContext, "Oops, Something went wrong..", Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
+
+    }
+
+    public void createSucessSweetAlert() {
+        new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText(":)")
+                .setContentText("Deleted Successfully.")
+                .show();
+
 
     }
 }

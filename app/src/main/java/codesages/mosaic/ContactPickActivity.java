@@ -131,7 +131,7 @@ public class ContactPickActivity extends AppCompatActivity {
             //      " Added: " + contact.getNumbers().getNumbersEmail().get(selectedIndex), Toast.LENGTH_SHORT).show();
             new SweetAlertDialog(ctx, SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("Success!")
-                    .setContentText(" Added: " + contact.getNumbers().getNumbersEmail().get(selectedIndex))
+                    .setContentText(" Added: " + contact.getName())
                     .setConfirmText("Ok")
                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override

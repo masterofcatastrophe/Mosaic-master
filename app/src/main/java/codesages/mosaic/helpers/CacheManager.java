@@ -87,6 +87,18 @@ public class CacheManager {
 
     }
 
+    public static boolean deleteMosaicByPosition(Context ctx, int position) {
+        Log.d(TAG, "deleteMosaicByPosition: " + position);
+        ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);
+        if (mosaics.size() > position) {
+            mosaics.remove(position);
+            setMosaicFromCache(ctx, mosaics);
+            return true;
+        }
+        return false;
+
+    }
+
     public static void setMosaicFromCache(Context ctx, ArrayList<Mosaic> list) {
         Log.d(TAG, "setMosaicFromCache: ");
         Gson gson = new Gson();
@@ -136,6 +148,43 @@ public class CacheManager {
         return false;
     }
 
+    public static boolean updateMosaicContact(Context ctx, int mosaicIndex, int contactIndex, int frequence) {
+        Log.d(TAG, "updateMosaicContact: M.index: " + mosaicIndex + " C.index: " + contactIndex);
+        ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);
+        if (mosaics.size() > mosaicIndex) {
+            if (mosaics.get(mosaicIndex).getContacts().size() > contactIndex) {
+                mosaics.get(mosaicIndex).getContacts().get(contactIndex).setFrequencyInDays(frequence);
+                updateMosaicByPosition(ctx, mosaics.get(mosaicIndex), mosaicIndex);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean deleteMosaicContact(Context ctx, int mosaicIndex, int contactIndex) {
+        Log.d(TAG, "deleteMosaicContact: M.index: " + mosaicIndex + " C.index: " + contactIndex);
+        ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);
+        if (mosaics.size() > mosaicIndex) {
+            if (mosaics.get(mosaicIndex).getContacts().size() > contactIndex) {
+                mosaics.get(mosaicIndex).getContacts().remove(contactIndex);
+                updateMosaicByPosition(ctx, mosaics.get(mosaicIndex), mosaicIndex);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static MosaicContact getMosaicContact(Context ctx, int mosaicIndex, int contactIndex) {
+        ArrayList<Mosaic> mosaics = getMosaicFromCache(ctx);
+        if (mosaics.size() > mosaicIndex) {
+            if (mosaics.get(mosaicIndex).getContacts().size() > contactIndex) {
+                return mosaics.get(mosaicIndex).getContacts().get(contactIndex);
+
+            }
+        }
+        return null;
+    }
+
     public static ArrayList<MosaicContact> mergeWithCached(ArrayList<MosaicContact> contacts, MosaicContact mosaicContact) {
         MosaicContact cachedMosaicContact = null;
         boolean nameFound = false;
@@ -171,7 +220,7 @@ public class CacheManager {
                     //Log.d(TAG, "mergeWithCached: " + mosaicContact.getName());
                     boolean innerFound = false;
                     String neW = mosaicContact.getContactNumbers().getEmails().get(k);
-                   //Log.d(TAG, "mergeWithCached: New Email" + neW);
+                    //Log.d(TAG, "mergeWithCached: New Email" + neW);
                     for (int j = 0; j < cachedMosaicContact.getContactNumbers().getEmails().size(); j++) {
                         String cached = cachedMosaicContact.getContactNumbers().getEmails().get(j);
                         //Log.d(TAG, "mergeWithCached: Cached Email" + cached);

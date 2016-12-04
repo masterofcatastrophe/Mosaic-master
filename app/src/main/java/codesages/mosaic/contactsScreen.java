@@ -37,11 +37,13 @@ public class contactsScreen extends AppCompatActivity {
         if (mosaic != null) {
             if (mosaic.getContacts().size() > 0)
                 setlist();
-            else
+            else {
                 new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
                         .setTitleText(mosaic.getName())
                         .setContentText("No contacts were added under this Mosaic, Press the \"+\" button below to Add some")
                         .show();
+                setlist();
+            }
         }
     }
 
@@ -56,6 +58,7 @@ public class contactsScreen extends AppCompatActivity {
         getMosaic();
         if (mosaic != null) {
             setViews();
+            getSupportActionBar().setTitle(mosaic.getName().toUpperCase());
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addContactsID);
@@ -88,7 +91,8 @@ public class contactsScreen extends AppCompatActivity {
             @Override
             public void onItemClick(android.widget.AdapterView<?> parent,
                                     View view, int position, long id) {
-                Toast.makeText(ctx, "Item Clicked: " + ((TextView) view.findViewById(R.id.mosaic_contact_list_row_name)).getText().toString(), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(ctx, "Item Clicked: " + ((TextView) view.findViewById(R.id.mosaic_contact_list_row_name)).getText().toString(), Toast.LENGTH_SHORT).show();
+                openMosaicContactDetails(mosaicIndex, position);
             }
         });
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -98,6 +102,15 @@ public class contactsScreen extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void openMosaicContactDetails(int mosaicIndex, int contactIndex) {
+        Intent intent = new Intent(ctx, contactDetailScreen.class);
+        intent.putExtra(Keys.INTENT_EXTRA_SELECTED_MOSAIC_INDEX, mosaicIndex);
+        intent.putExtra(Keys.INTENT_EXTRA_SELECTED_CONTACT_INDEX, contactIndex);
+        startActivity(intent);
+
+
     }
 
     private void getMosaic() {
