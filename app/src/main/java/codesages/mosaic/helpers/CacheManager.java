@@ -40,6 +40,7 @@ public class CacheManager {
     public static String MOSAIC_SHARED_PREFERENCE = "mosaic_prefs";
     public static String MOSAIC_LIST = "mosaic_list";
     public static String OBSERVER_FLAG = "observer_flag";
+    public static String ALARMS_FLAG = "alarms_flag";
 
     public static boolean getOugoingSMSObserverFlag(Context ctx) {
 
@@ -243,6 +244,19 @@ public class CacheManager {
             contacts.add(mosaicContact);
         }
         return contacts;
+
+    }
+
+    public static void setAlarmsSet(Context ctx, boolean flag) {
+        SharedPreferences sharedpref = ctx.getSharedPreferences(MOSAIC_SHARED_PREFERENCE, 0);
+        sharedpref.edit().putBoolean(ALARMS_FLAG, flag).commit();
+        Log.d(TAG, "setAlarmsSet: " + flag);
+    }
+
+    public static boolean isAlarmsSet(Context ctx) {
+        Log.d(TAG, "isAlarmsSet: ");
+        SharedPreferences sharedpref = ctx.getSharedPreferences(MOSAIC_SHARED_PREFERENCE, 0);
+        return sharedpref.getBoolean(ALARMS_FLAG, false);
 
     }
 }

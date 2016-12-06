@@ -2,6 +2,8 @@ package codesages.mosaic;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +26,14 @@ import android.widget.Toast;
 import com.squareup.picasso.Cache;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
 import codesages.mosaic.lists.MosaicAdapter;
+import codesages.mosaic.receiver.AlarmReceiver;
 import codesages.mosaic.receiver.IncomingCallsReceiver;
 import codesages.mosaic.receiver.OutgoingCallsReceiver;
 import codesages.mosaic.receiver.OutgoingSMSObserver;
@@ -75,7 +79,43 @@ public class mosaicsListScreen extends AppCompatActivity {
 
         //if (!CacheManager.getOugoingSMSObserverFlag(ctx)) {
         startougoingSMSObserver();
+        startAlarms();
         //}
+    }
+
+    private void startAlarms() {
+        if (!CacheManager.isAlarmsSet(ctx)) {
+            Intent alarmIntent = new Intent(mosaicsListScreen.this, AlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(mosaicsListScreen.this, 0, alarmIntent, 0);
+
+            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            Calendar calendar9Am = Calendar.getInstance();
+            calendar9Am.setTimeInMillis(System.currentTimeMillis());
+            calendar9Am.set(Calendar.HOUR_OF_DAY, 11);
+            calendar9Am.set(Calendar.MINUTE, 25);
+            calendar9Am.set(Calendar.SECOND, 0);
+            Calendar calendar2Pm = Calendar.getInstance();
+            calendar2Pm.setTimeInMillis(System.currentTimeMillis());
+            calendar2Pm.set(Calendar.HOUR_OF_DAY, 11);
+            calendar2Pm.set(Calendar.MINUTE, 25);
+            calendar2Pm.set(Calendar.SECOND, 0);
+            Calendar calendar6Pm = Calendar.getInstance();
+            calendar6Pm.setTimeInMillis(System.currentTimeMillis());
+            calendar6Pm.set(Calendar.HOUR_OF_DAY, 11);
+            calendar6Pm.set(Calendar.MINUTE, 25);
+            calendar6Pm.set(Calendar.SECOND, 0);
+
+
+        /* Repeating every day interval */
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar9Am.getTimeInMillis(),
+                    1000 * 60 * 60 * 24, pendingIntent);
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar2Pm.getTimeInMillis(),
+                    1000 * 60 * 60 * 24, pendingIntent);
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar6Pm.getTimeInMillis(),
+                    1000 * 60 * 60 * 24, pendingIntent);
+            CacheManager.setAlarmsSet(ctx, true);
+        }
     }
 
     private void setMosaicList() {
