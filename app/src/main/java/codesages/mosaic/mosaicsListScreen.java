@@ -2,6 +2,8 @@ package codesages.mosaic;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +26,14 @@ import android.widget.Toast;
 import com.squareup.picasso.Cache;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
 import codesages.mosaic.lists.MosaicAdapter;
+import codesages.mosaic.receiver.AlarmReceiver;
 import codesages.mosaic.receiver.IncomingCallsReceiver;
 import codesages.mosaic.receiver.OutgoingCallsReceiver;
 import codesages.mosaic.receiver.OutgoingSMSObserver;
@@ -57,8 +61,6 @@ public class mosaicsListScreen extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //setMosaicList();
-
         ctx = this;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.createMosaicButton);
@@ -73,10 +75,9 @@ public class mosaicsListScreen extends AppCompatActivity {
 
         checkCallsPermissions();
 
-        //if (!CacheManager.getOugoingSMSObserverFlag(ctx)) {
-        startougoingSMSObserver();
-        //}
     }
+
+
 
     private void setMosaicList() {
         mosaicArrayList = CacheManager.getMosaicFromCache(getApplicationContext());
@@ -199,13 +200,7 @@ public class mosaicsListScreen extends AppCompatActivity {
                 .show();
     }
 
-    public void startougoingSMSObserver() {
-        Log.d(TAG, "startougoingSMSObserver: ");
-        OutgoingSMSObserver smsSentObserver = new OutgoingSMSObserver(ctx, new Handler());
-        ctx.getContentResolver().registerContentObserver(SMS_STATUS_URI, true, smsSentObserver);
-        CacheManager.setOugoingSMSObserverFlag(ctx, true);
 
-    }
 
 
 }

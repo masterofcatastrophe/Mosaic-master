@@ -138,12 +138,12 @@ public class MosaicAdapter extends BaseAdapter implements SectionIndexer {
             }
         } else {
             Picasso.with(mContext)
-                    .load(R.drawable.file_image)
+                    .load(R.drawable.family)
                     //.placeholder(R.drawable.progress_animation)
-                    .error(R.drawable.file_image)
+                    .error(R.drawable.family)
                     .resize(0, 500)
                     .into(viewHolder.img);
-            viewHolder.img.setScaleType(ImageView.ScaleType.CENTER);
+
         }
         viewHolder.btn.setFocusable(false);
         viewHolder.btn.setFocusableInTouchMode(false);

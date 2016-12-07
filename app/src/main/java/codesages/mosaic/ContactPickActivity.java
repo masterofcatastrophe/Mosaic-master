@@ -44,8 +44,14 @@ public class ContactPickActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact_pick);
         ctx = this;
         getMosaicIndex();
-        setContacts();
-
+        if (MosaicApplication.contacts != null) {
+            if (MosaicApplication.contacts.size() > 0) {
+                contacts = MosaicApplication.contacts;
+                setList();
+            }
+        } else {
+            setContacts();
+        }
     }
 
     @Override
@@ -220,6 +226,10 @@ public class ContactPickActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             pDialog.dismiss();
+            if (contacts != null)
+                if (contacts.size() > 0) {
+                    MosaicApplication.contacts = contacts;
+                }
             setList();
 
         }

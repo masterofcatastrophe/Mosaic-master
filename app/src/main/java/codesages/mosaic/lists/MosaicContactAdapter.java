@@ -104,6 +104,7 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
             viewHolder.name = (TextView) convertView.findViewById(R.id.mosaic_contact_list_row_name);
             viewHolder.contact = (TextView) convertView.findViewById(R.id.mosaic_contact_list_row_contact);
             viewHolder.period = (TextView) convertView.findViewById(R.id.mosaic_contact_list_row_period);
+            viewHolder.status = (TextView) convertView.findViewById(R.id.mosaic_contact_list_row_status);
             /**
              * At very first time when the List View row Item control's
              * instance is created it will be store in the convertView as a
@@ -135,6 +136,9 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
             //String strDate = dateFormat.format(new Date());
             viewHolder.period.setText(String.format("Last Contacted on: %s", "Unknown"));
             convertView.findViewById(R.id.inner_ll).setBackgroundResource(R.drawable.sadface_tile);
+            viewHolder.status.setText("Status: Time to touch base");
+            viewHolder.status.setTextColor(Color.parseColor("#F44336"));
+
         } else {
             String strDate = dateFormat.format(conatcts.get(position).getLastCall());
             viewHolder.period.setText(String.format("Last Contacted on: %s", strDate));
@@ -145,6 +149,8 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
                             TimeUnit.MILLISECONDS);
             if (daysDiff > conatcts.get(position).getFrequencyInDays()) {
                 convertView.findViewById(R.id.inner_ll).setBackgroundResource(R.drawable.sadface_tile);
+                viewHolder.status.setText("Status: Time to touch base");
+                viewHolder.status.setTextColor(Color.parseColor("#F44336"));
             }
 
 
@@ -198,6 +204,7 @@ public class MosaicContactAdapter extends BaseAdapter implements SectionIndexer 
         public TextView name;
         public TextView contact;
         public TextView period;
+        public TextView status;
 
 
     }

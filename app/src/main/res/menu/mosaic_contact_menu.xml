@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mosaic_contact_text_all_option"
+        android:title="Text All"
+        android:visible="true"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/mosaic_contact_email_all_option"
+        android:title="Email All"
+        android:visible="true"
+        app:showAsAction="never" />
+</menu>

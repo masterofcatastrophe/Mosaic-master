@@ -9,7 +9,7 @@ import java.util.Date;
 public class MosaicContact {
     String Name;
     Date LastCall;
-    String Frequency;
+    //String Frequency;
     int FrequencyInDays;
     ContactNumbers contactNumbers;
 
@@ -35,13 +35,6 @@ public class MosaicContact {
         LastCall = lastCall;
     }
 
-    public String getFrequency() {
-        return Frequency;
-    }
-
-    public void setFrequency(String frequency) {
-        Frequency = frequency;
-    }
 
     public ContactNumbers getContactNumbers() {
         return contactNumbers;
