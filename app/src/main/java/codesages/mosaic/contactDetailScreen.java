@@ -3,6 +3,7 @@ package codesages.mosaic;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.inputmethodservice.Keyboard;
 import android.net.Uri;
@@ -26,6 +27,9 @@ import android.widget.Toast;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
@@ -78,15 +82,18 @@ public class contactDetailScreen extends AppCompatActivity {
         Log.d(TAG, "setViews: Freq= " + newFrequency);
         ImageView initImage = (ImageView) findViewById(R.id.mosaic_contact_details_img);
         TextView nameTv = (TextView) findViewById(R.id.mosaic_contact_details_name);
-        TextView lastContactedOn = (TextView) findViewById(R.id.mosaic_contact_details_contacted_on);
+        final TextView lastContactedOn = (TextView) findViewById(R.id.mosaic_contact_details_contacted_on);
+        final TextView statusTv = (TextView) findViewById(R.id.mosaic_contact_details_status);
         final TextView freqTv = (TextView) findViewById(R.id.mosaic_contact_details_frequency_label);
 
         BootstrapButton phoneBtn = (BootstrapButton) findViewById(R.id.mosaic_contact_details_phone_btn);
         BootstrapButton emailBtn = (BootstrapButton) findViewById(R.id.mosaic_contact_details_email_btn);
         BootstrapButton textBtn = (BootstrapButton) findViewById(R.id.mosaic_contact_details_sms_btn);
+        BootstrapButton physicalBtn = (BootstrapButton) findViewById(R.id.mosaic_contact_details_physical_btn);
         SeekBar seekBar = (SeekBar) findViewById(R.id.mosaic_contact_details_seek_bar);
 
-        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("EEE MMM yyyy hh:mm");
+        setStatus(statusTv, lastContactedOn);
+
         String initials = getInitials();
 
         ColorGenerator generator = ColorGenerator.MATERIAL;
@@ -96,7 +103,7 @@ public class contactDetailScreen extends AppCompatActivity {
         initImage.setImageDrawable(drawable);
 
         nameTv.setText(contact.getName());
-        lastContactedOn.setText(contact.getLastCall() == null ? "Unknown" : dateFormat.format(contact.getLastCall()));
+
         freqTv.setText("" + contact.getFrequencyInDays());
         phoneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +125,23 @@ public class contactDetailScreen extends AppCompatActivity {
                 createDialog(ActionType.SMS);
             }
         });
+        physicalBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date date = new Date();
+                CacheManager.updateMosaicContact(ctx, mosaicIndex, contactIndex, date);
+                try {
 
+                    java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("EEE dd MMM yyyy hh:mm aa");
+                    lastContactedOn.setText("Last Contacted On:\n" + dateFormat.format(date));
+                    statusTv.setText("Status: All good");
+                    statusTv.setTextColor(Color.parseColor("#4CAF50"));
+
+                } catch (Exception e) {
+                    finish();
+                }
+            }
+        });
 
         seekBar.setProgress(contact.getFrequencyInDays());
         newFrequency = contact.getFrequencyInDays();
@@ -148,6 +171,36 @@ public class contactDetailScreen extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void setStatus(TextView statusTv, TextView lastContactedOn) {
+        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("EEE dd MMM yyyy hh:mm aa");
+
+        if (contact.getLastCall() == null) {
+            //to convert Date to String, use format method of SimpleDateFormat class.
+            //String strDate = dateFormat.format(new Date());
+            lastContactedOn.setText(String.format("Last Contacted on:\n%s", "Unknown"));
+            statusTv.setText("Status: Time to touch base");
+            statusTv.setTextColor(Color.parseColor("#F44336"));
+
+        } else {
+            String strDate = dateFormat.format(contact.getLastCall());
+            lastContactedOn.setText(String.format("Last Contacted on:\n%s", strDate));
+            long daysDiff = TimeUnit
+                    .DAYS
+                    .convert(new Date().getTime()
+                                    - contact.getLastCall().getTime(),
+                            TimeUnit.MILLISECONDS);
+            if (daysDiff > contact.getFrequencyInDays()) {
+                statusTv.setText("Status: Time to touch base");
+                statusTv.setTextColor(Color.parseColor("#F44336"));
+            } else {
+                statusTv.setText("Status: All good");
+                statusTv.setTextColor(Color.parseColor("#4CAF50"));
+            }
+
+
+        }
     }
 
     private void createDialog(final ActionType actionType) {
@@ -203,12 +256,9 @@ public class contactDetailScreen extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.contact_detail_edit_option)
-            Toast.makeText(ctx, "Open Edit Activity", Toast.LENGTH_SHORT).show();
-        else if (item.getItemId() == R.id.contact_detail_delete_option) {
+        if (item.getItemId() == R.id.contact_detail_delete_option) {
             createAlertSweetAlert();
         }
-
 
         return super.onOptionsItemSelected(item);
     }

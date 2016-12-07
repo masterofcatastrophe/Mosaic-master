@@ -3,12 +3,15 @@ package codesages.mosaic;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -93,6 +96,7 @@ public class contactsScreen extends AppCompatActivity {
                                     View view, int position, long id) {
                 // Toast.makeText(ctx, "Item Clicked: " + ((TextView) view.findViewById(R.id.mosaic_contact_list_row_name)).getText().toString(), Toast.LENGTH_SHORT).show();
                 openMosaicContactDetails(mosaicIndex, position);
+
             }
         });
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -129,4 +133,38 @@ public class contactsScreen extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mosaic_contact_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.mosaic_contact_email_all_option:
+                break;
+            case R.id.mosaic_contact_text_all_option:
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    /*private void smsAction() {
+        //mosaic.getContacts().s
+        Log.d(TAG, "smsAction: " + number);
+        Uri uri = Uri.parse("smsto:" + number);
+        Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+        it.putExtra("sms_body", "Hi, ");
+        startActivity(it);
+    }
+    private void emailAction(String email) {
+        Log.d(TAG, "emailAction: " + email);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Mosaic: been a long time");
+        intent.putExtra(Intent.EXTRA_TEXT, "Sent via Mosaic.");
+        startActivity(intent);
+    }*/
 }
