@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
@@ -141,30 +143,49 @@ public class contactsScreen extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.mosaic_contact_email_all_option:
+                emailAction();
                 break;
             case R.id.mosaic_contact_text_all_option:
+                smsAction();
                 break;
 
         }
         return super.onOptionsItemSelected(item);
     }
-    /*private void smsAction() {
-        //mosaic.getContacts().s
-        Log.d(TAG, "smsAction: " + number);
-        Uri uri = Uri.parse("smsto:" + number);
+
+    private void smsAction() {
+        String numbers = "";
+        for (int i = 0; i < mosaic.getContacts().size(); i++) {
+            ArrayList<String> nums = mosaic.getContacts().get(i).getContactNumbers().getNumbers();
+            for (int j = 0; j < nums.size(); j++) {
+                numbers += nums.get(j) + ";";
+            }
+        }
+
+        Log.d(TAG, "smsAction: " + numbers);
+        Uri uri = Uri.parse("smsto:" + numbers);
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
         it.putExtra("sms_body", "Hi, ");
         startActivity(it);
     }
-    private void emailAction(String email) {
-        Log.d(TAG, "emailAction: " + email);
+
+
+    private void emailAction() {
+        ArrayList<String> emailsList = new ArrayList<>();
+        for (int i = 0; i < mosaic.getContacts().size(); i++) {
+            ArrayList<String> eMails = mosaic.getContacts().get(i).getContactNumbers().getEmails();
+            for (int j = 0; j < eMails.size(); j++) {
+                emailsList.add(eMails.get(j));
+            }
+        }
+        Log.d(TAG, "emailAction: ");
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+        intent.putExtra(Intent.EXTRA_EMAIL, emailsList.toArray(new String[emailsList.size()]));
         intent.putExtra(Intent.EXTRA_SUBJECT, "Mosaic: been a long time");
         intent.putExtra(Intent.EXTRA_TEXT, "Sent via Mosaic.");
         startActivity(intent);
-    }*/
+    }
 }

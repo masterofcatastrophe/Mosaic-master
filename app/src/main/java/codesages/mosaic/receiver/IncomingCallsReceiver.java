@@ -50,12 +50,12 @@ public class IncomingCallsReceiver extends BroadcastReceiver {
             Mosaic.FindMosaic findMosaic;
             Log.d("MyPhoneListener", state + "   incoming no:" + incomingNumber);
             if (state == (TelephonyManager.CALL_STATE_RINGING)) {
-                Toast.makeText(ctx, "Phone Is Ringing ", Toast.LENGTH_LONG).show();
+                //Toast.makeText(ctx, "Phone Is Ringing ", Toast.LENGTH_LONG).show();
                 Log.d(TAG, "onCallStateChanged: " + TelephonyManager.EXTRA_STATE_RINGING);
             }
 
             if (state == (TelephonyManager.CALL_STATE_OFFHOOK)) {
-                Toast.makeText(ctx, "Call Recieved", Toast.LENGTH_LONG).show();
+                //Toast.makeText(ctx, "Call Recieved", Toast.LENGTH_LONG).show();
                 Log.d(TAG, "onCallStateChanged: " + TelephonyManager.EXTRA_STATE_OFFHOOK);
 
                 if (!incomingNumber.equals("") && !incomingNumber.isEmpty())
@@ -64,7 +64,7 @@ public class IncomingCallsReceiver extends BroadcastReceiver {
             }
 
             if (state == (TelephonyManager.CALL_STATE_IDLE)) {
-                Toast.makeText(ctx, "Phone Is Idle", Toast.LENGTH_LONG).show();
+                //Toast.makeText(ctx, "Phone Is Idle", Toast.LENGTH_LONG).show();
                 Log.d(TAG, "onCallStateChanged: " + TelephonyManager.EXTRA_STATE_IDLE);
             }
         }

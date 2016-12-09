@@ -2,43 +2,31 @@ package codesages.mosaic;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Cache;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import codesages.mosaic.helpers.CacheManager;
 import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
+import codesages.mosaic.helpers.NotificationsHelper;
 import codesages.mosaic.lists.MosaicAdapter;
-import codesages.mosaic.receiver.AlarmReceiver;
-import codesages.mosaic.receiver.IncomingCallsReceiver;
-import codesages.mosaic.receiver.OutgoingCallsReceiver;
-import codesages.mosaic.receiver.OutgoingSMSObserver;
 import codesages.mosaic.receiver.ReceiversHelper;
-import it.gmariotti.cardslib.library.recyclerview.internal.CardArrayRecyclerViewAdapter;
 
 public class mosaicsListScreen extends AppCompatActivity {
 
@@ -47,6 +35,7 @@ public class mosaicsListScreen extends AppCompatActivity {
     private ArrayList<Mosaic> mosaicArrayList = new ArrayList<>();
     Context ctx;
     static boolean isAlertShown = false;
+    int toolBarClickcount;
 
     @Override
     protected void onResume() {
@@ -61,6 +50,18 @@ public class mosaicsListScreen extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        toolBarClickcount = 1;
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: Toolbar: " + toolBarClickcount);
+                if (toolBarClickcount++ == 5) {
+                    Toast.makeText(ctx, "Manual Alarms are Triggered.", Toast.LENGTH_SHORT).show();
+                    NotificationsHelper.startAlarms(ctx);
+                    toolBarClickcount = 1;
+                }
+            }
+        });
         ctx = this;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.createMosaicButton);
@@ -76,7 +77,6 @@ public class mosaicsListScreen extends AppCompatActivity {
         checkCallsPermissions();
 
     }
-
 
 
     private void setMosaicList() {
@@ -199,8 +199,6 @@ public class mosaicsListScreen extends AppCompatActivity {
                 })
                 .show();
     }
-
-
 
 
 }

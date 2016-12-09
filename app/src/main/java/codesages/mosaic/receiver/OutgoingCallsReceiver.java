@@ -24,7 +24,7 @@ public class OutgoingCallsReceiver extends BroadcastReceiver {
         // an Intent broadcast.
         String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
         Log.d("OutgoingCallsReceiver", "RINGING (outgoing call) with number: " + number);
-        Toast.makeText(context, "Outgoing call number: " + number, Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, "Outgoing call number: " + number, Toast.LENGTH_LONG).show();
         processNumber(context, number);
     }
 
