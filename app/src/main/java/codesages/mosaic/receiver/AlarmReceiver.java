@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -31,7 +32,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     }
 
-    private void buildNotification(Context context) {
+    public static void buildNotification(Context context) {
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         PendingIntent resultPendingIntent =
@@ -45,7 +46,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         for (int i = 0; i < list.size(); i++) {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context)
-                            .setSmallIcon(android.R.drawable.ic_popup_reminder)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            //.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
                             .setContentTitle(list.get(i).getMosaicName().toUpperCase())
                             .setContentText("Contacts require some attention!")
                             .setDefaults(NotificationCompat.DEFAULT_ALL)

@@ -64,18 +64,18 @@ public class NotificationsHelper {
 
         Calendar calendar9Am = Calendar.getInstance();
         calendar9Am.setTimeInMillis(System.currentTimeMillis());
-        calendar9Am.set(Calendar.HOUR_OF_DAY, 11);
-        calendar9Am.set(Calendar.MINUTE, 25);
+        calendar9Am.set(Calendar.HOUR_OF_DAY, 9);
+        calendar9Am.set(Calendar.MINUTE, 0);
         calendar9Am.set(Calendar.SECOND, 0);
         Calendar calendar2Pm = Calendar.getInstance();
         calendar2Pm.setTimeInMillis(System.currentTimeMillis());
-        calendar2Pm.set(Calendar.HOUR_OF_DAY, 11);
-        calendar2Pm.set(Calendar.MINUTE, 25);
+        calendar2Pm.set(Calendar.HOUR_OF_DAY, 14);
+        calendar2Pm.set(Calendar.MINUTE, 00);
         calendar2Pm.set(Calendar.SECOND, 0);
         Calendar calendar6Pm = Calendar.getInstance();
         calendar6Pm.setTimeInMillis(System.currentTimeMillis());
-        calendar6Pm.set(Calendar.HOUR_OF_DAY, 11);
-        calendar6Pm.set(Calendar.MINUTE, 25);
+        calendar6Pm.set(Calendar.HOUR_OF_DAY, 18);
+        calendar6Pm.set(Calendar.MINUTE, 00);
         calendar6Pm.set(Calendar.SECOND, 0);
 
 

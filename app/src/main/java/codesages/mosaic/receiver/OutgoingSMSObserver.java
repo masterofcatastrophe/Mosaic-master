@@ -62,7 +62,15 @@ public class OutgoingSMSObserver extends ContentObserver {
         for (Mosaic.FindMosaic findMosaic : list1) {
             if (findMosaic != null) {
                 MosaicContact mContact = mosaics.get(findMosaic.mosaicIndex).getContacts().get(findMosaic.contactIndex);
-                if (mContact.getLastCall().compareTo(date) < 0) {
+                if (mContact.getLastCall() != null) {
+                    if (mContact.getLastCall().compareTo(date) < 0) {
+                        CacheManager.updateMosaicContact(context,
+                                findMosaic.mosaicIndex,
+                                findMosaic.contactIndex,
+                                date);
+                        return true;
+                    }
+                } else {
                     CacheManager.updateMosaicContact(context,
                             findMosaic.mosaicIndex,
                             findMosaic.contactIndex,
@@ -76,7 +84,15 @@ public class OutgoingSMSObserver extends ContentObserver {
         for (Mosaic.FindMosaic findMosaic : list2) {
             if (findMosaic != null) {
                 MosaicContact mContact = mosaics.get(findMosaic.mosaicIndex).getContacts().get(findMosaic.contactIndex);
-                if (mContact.getLastCall().compareTo(date) < 0) {
+                if (mContact.getLastCall() != null) {
+                    if (mContact.getLastCall().compareTo(date) < 0) {
+                        CacheManager.updateMosaicContact(context,
+                                findMosaic.mosaicIndex,
+                                findMosaic.contactIndex,
+                                date);
+                        return true;
+                    }
+                } else {
                     CacheManager.updateMosaicContact(context,
                             findMosaic.mosaicIndex,
                             findMosaic.contactIndex,

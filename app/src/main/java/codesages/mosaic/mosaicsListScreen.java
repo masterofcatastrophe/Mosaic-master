@@ -26,6 +26,7 @@ import codesages.mosaic.helpers.Keys;
 import codesages.mosaic.helpers.Mosaic;
 import codesages.mosaic.helpers.NotificationsHelper;
 import codesages.mosaic.lists.MosaicAdapter;
+import codesages.mosaic.receiver.AlarmReceiver;
 import codesages.mosaic.receiver.ReceiversHelper;
 
 public class mosaicsListScreen extends AppCompatActivity {
@@ -57,7 +58,7 @@ public class mosaicsListScreen extends AppCompatActivity {
                 Log.d(TAG, "onClick: Toolbar: " + toolBarClickcount);
                 if (toolBarClickcount++ == 5) {
                     Toast.makeText(ctx, "Manual Alarms are Triggered.", Toast.LENGTH_SHORT).show();
-                    NotificationsHelper.startAlarms(ctx);
+                    AlarmReceiver.buildNotification(ctx);
                     toolBarClickcount = 1;
                 }
             }
